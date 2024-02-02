@@ -8,7 +8,7 @@ if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     $http = "http://";
 }
 // echo $u;
-define('URL',$http.$u.'/actualizaciondatos/');// ip local:puerto
+define('URL',$http.$u.'/creditoexpress/');// ip local:puerto
 // define('HOST', '10.5.1.86');
 // define('DB', 'CARTIMEX');
 // define('USER', 'jalvarado');
@@ -16,10 +16,10 @@ define('URL',$http.$u.'/actualizaciondatos/');// ip local:puerto
 // define('CHARSET', 'utf8mb4');
 
 
-define('HOST', '10.5.1.3');
-define('DB', 'CARTIMEX');
-define('USER', 'jairo');
-define('PASSWORD', 'qwertys3gur0');
+define('HOST', '127.0.0.1');
+define('DB', 'crediweb');
+define('USER', 'root');
+define('PASSWORD', '');
 define('CHARSET', 'utf8mb4');
 
 // define('HOST', '10.5.1.86');

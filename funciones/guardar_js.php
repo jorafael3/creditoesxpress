@@ -1,14 +1,15 @@
 <?php
 
-$url_Guardar_datos = constant('URL') . 'principal/Guardar_datos/';
-$url_validar_cedula = constant('URL') . 'principal/Validar_Cedula/';
-$url_actualizado = constant('URL') . 'actualizado';
+$url_Validar_Celular = constant('URL') . 'principal/Validar_Celular/';
+$url_Validar_Codigo = constant('URL') . 'principal/Validar_Codigo/';
 
 ?>
 
 <script>
-    var url_Guardar_datos = '<?php echo $url_Guardar_datos ?>';
-    var url_validar_cedula = '<?php echo $url_validar_cedula ?>';
+    var url_Validar_Celular = '<?php echo $url_Validar_Celular ?>';
+    var url_Validar_Codigo = '<?php echo $url_Validar_Codigo ?>';
+
+    var TELEFONO;
 
     function Mensaje(t1, t2, ic) {
         Swal.fire(
@@ -18,60 +19,137 @@ $url_actualizado = constant('URL') . 'actualizado';
         );
     }
 
+    $("#CELULAR").focus();
 
 
-    function Validar_Cedula() {
-        let ced = $("#cedula").val();
+    var element = document.querySelector("#kt_stepper_example_basic");
+
+    // Initialize Stepper
+    var stepper = new KTStepper(element);
+
+    // Handle next step
+    stepper.on("kt.stepper.next", function(stepper) {
+
+        if (stepper.getCurrentStepIndex() === 1) {
+            // var celularInput = document.querySelector("#CELULAR");
+            // celularInput = celularInput.value.trim();
+            // if (celularInput == "") {
+            //     Mensaje("Debe ingresar un numero celular", "", "error");
+            //     $("#CELULAR").focus();
+            //     return false;
+            // } else if (celularInput.length != 10) {
+            //     Mensaje("Debe ingresar un numero celular valido", "", "error");
+            //     $("#CELULAR").focus();
+            //     return false;
+            // } else {
+            //     let terminos = $("#TERMINOS").is(":checked");
+            //     if (terminos == false) {
+            //         Mensaje("Debe aceptar los terminos y condiciones para continuar", "", "error");
+            //         return false;
+            //     } else {
+            //         Guardar_Celular();
+            //     }
+            // }
+            // var codeInputs = $('.code-input');
+            // codeInputs.first().focus();
+            stepper.goNext();
+
+        }
+        if (stepper.getCurrentStepIndex() === 2) {
+            // var codeInputs = $('.code-input');
+            // codeInputs.first().focus();
+            // Validar_Codigo();
+            stepper.goNext();
+        }
+
+        stepper.goNext();
+    });
+    stepper.on("kt.stepper.previous", function(stepper) {
+        // stepper.goPrevious();
+    });
+
+
+    function Guardar_Celular(callback) {
+        let cel = $("#CELULAR").val();
+        let terminos = $("#TERMINOS").is(":checked");
         let param = {
-            cedula: ced
+            celular: cel,
+            terminos: terminos
         }
         console.log('param: ', param);
-        AjaxSendReceiveData(url_validar_cedula, param, function(x) {
+
+        AjaxSendReceiveData(url_Validar_Celular, param, function(x) {
             console.log('x: ', x);
-            if (x[1] == "error") {
-                Mensaje(x[0], "", x[1]);
+            if (x[0] == 1) {
+                TELEFONO = x[1];
+                $("#SECC_COD").append(x[2]);
+                stepper.goNext();
             } else {
-                $("#INJ").empty();
-                $("#INJ").append(x[1]);
-                $("#kt_modal_new_target_submit").hide();
-
-                setTimeout(() => {
-                    $("#nombres").val(x[0][0]["Nombre"]);
-                    $("#email").attr("placeholder", x[0][0]["Email"]);
-                    $("#telefono").attr("placeholder", x[0][0]["Celular"]);
-                }, 100);
-                // $("#").val();
-
+                Mensaje(x[1], "", x[2]);
             }
         });
     }
 
-    function Guardar_datos() {
-
-        let cedula = $("#cedula").val();
-        let telefono = $("#telefono").val();
-        let email = $("#email").val();
-        let check_g = $("#check_g").is(":checked");
-        let check_pd = $("#check_pd").is(":checked");
-
-        let param = {
-            cedula: cedula,
-            telefono: telefono,
-            email: email,
-            check_g: check_g,
-            check_pd: check_pd,
-        }
-        console.log('param: ', param);
-
-
-        AjaxSendReceiveData(url_Guardar_datos, param, function(x) {
-            console.log('x: ', x);
-            Mensaje(x[0], "", x[1]);
-            if (x[1] == "success") {
-                window.location.replace('<?php echo $url_actualizado ?>');
+    function Validar_Codigo() {
+        var codeInputs = document.querySelectorAll('.code-input');
+        var valores = Array.from(codeInputs).map(function(input) {
+            return input.value;
+        });
+        let CON = 0;
+        valores.map(function(x) {
+            if (x.trim() == "") {
+                Mensaje("Ingrese el codigo de 4 digitos", "", "error")
+                return;
+            } else {
+                CON++;
             }
-        })
+        });
+        if (CON == 4) {
+            let param = {
+                TELEFONO: $("#CEL_1").val(),
+                CODIGO: valores
+            }
+            console.log('param: ', param);
+            AjaxSendReceiveData(url_Validar_Codigo, param, function(x) {
+                console.log('x: ', x);
+                if (x[0] == 1) {
+                    $("#SECC_CRE").append(x[2]);
+                    stepper.goNext();
+                } else {
+                    Mensaje(x[1], "", x[2]);
+                }
+            });
+        }
     }
+
+    function Verificar() {
+        let Cedula = $("#CEDULA").val();
+        let cel = $("#CEL").val();
+        let email = $("#CORREO").val();
+
+        if (Cedula == "") {
+            Mensaje("Debe ingresar un número de cédula valido", "", "error")
+        } else {
+            let param = {
+                cedula: cedula,
+                celular: cel,
+                email: email
+            }
+        }
+    }
+
+    $("#CELULAR").on("input", function() {
+        var cleanedValue = $(this).val().replace(/\D/g, '');
+        cleanedValue = cleanedValue.slice(0, 10);
+        $(this).val(cleanedValue);
+    });
+
+    $("#CEDULA").on("input", function() {
+        var cleanedValue = $(this).val().replace(/\D/g, '');
+        cleanedValue = cleanedValue.slice(0, 10);
+        $(this).val(cleanedValue);
+    });
+
 
     function AjaxSendReceiveData(url, data, callback) {
         var xmlhttp = new XMLHttpRequest();

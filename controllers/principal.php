@@ -15,98 +15,62 @@ class Principal extends Controller
         $this->view->render('principal/nueva');
     }
 
-    function render_Ac()
+
+    function Validar_Celular()
     {
 
-        $this->view->render('principal/actualizado');
-    }
-
-    function Guardar_datos()
-    {
-        global $globalVar;
-        // if (isset($_POST["n"])) {
-        //     $ced = $_POST["cedula"];
-        //     print_r($ced);
-        //     echo $ced;
-
-        //     $this->view->ced = $ced;
-        // } else {
-        //     $this->view->render('principal/nueva');
-        // }
-
-        // $this->view->render('principal/nueva');
         $array = json_decode(file_get_contents("php://input"), true);
-        // var_dump($array);
 
-        // if (($array["email"]) == null || ($array["email"]) == "") {
-        //     echo json_encode(["Debe ingresar email", "error"]);
-        // } else  if (trim($array["telefono"]) == null || trim($array["telefono"]) == "") {
-        //     echo json_encode(["Debe ingresar numero de teléfono", "error"]);
-        // } else  
-        if (($array["check_g"]) == false) {
-            echo json_encode(["Debe aceptar los términos y condiciones para continuar", "error"]);
+        // echo json_encode($array["celular"]);
+        // exit();
+
+        if (strlen(trim($array["celular"])) != 10) {
+            echo json_encode([0, "El teléfono no tiene un formato valido", "error"]);
+            exit();
         } else {
-
-
-
-
-
-            if (trim($array["email"]) == "") {
-
-                if (trim($array["telefono"]) == "") {
-                    $Ventas =  $this->model->Validar_Actualizacion($array);
-                    echo json_encode($Ventas);
-                } else {
-                    $TEL = $this->validateEcuadorianCellphone($array["telefono"]);
-                    if ($TEL == 0) {
-                        echo json_encode(["El teléfono no tiene un formato valido", "error"]);
-                    } else {
-                        $Ventas =  $this->model->Validar_Actualizacion($array);
-                        echo json_encode($Ventas);
-                    }
-                }
+            $TEL = $this->validateEcuadorianCellphone(trim($array["celular"]));
+            if ($TEL == 0) {
+                echo json_encode([0, "El teléfono no tiene un formato valido", "error"]);
+                exit();
             } else {
-                $EMAIL = $this->is_valid_email($array["email"]);
-                if ($EMAIL == false) {
-                    echo json_encode(["El correo no tiene un formato valido", "error"]);
+                $TERMINOS = $array["terminos"];
+                if ($TERMINOS != true) {
+                    echo json_encode([0, "Debe aceptar los términos y condiciones para continuar", "info"]);
+                    exit();
                 } else {
-                    if (trim($array["telefono"]) == "") {
-                        $Ventas =  $this->model->Validar_Actualizacion($array);
-                        echo json_encode($Ventas);
-                    } else {
-                        $TEL = $this->validateEcuadorianCellphone($array["telefono"]);
-                        if ($TEL == 0) {
-                            echo json_encode(["El teléfono no tiene un formato valido", "error"]);
-                        } else {
-                            $Ventas =  $this->model->Validar_Actualizacion($array);
-                            echo json_encode($Ventas);
-                        }
-                    }
-                    //$Ventas =  $this->model->Validar_Actualizacion($array);
-                    //echo json_encode($Ventas);
+                    $Ventas =  $this->model->Validar_Celular($array);
                 }
             }
-
-
-
-            // echo json_encode(["asd","success"]);
-            // if ($Ventas[1] == "success") {
-            //     $this->view->render('principal/actualizado');
-            // } else {
-            //     echo json_encode($Ventas);
-            // }
         }
-        // $l = constant("url");
-        // header("Location: " . $l);
-        // echo $this->render_Ac();
-
-        //$this->CrecimientoCategoriasIndex();
     }
+
+    function Validar_Codigo()
+    {
+        $array = json_decode(file_get_contents("php://input"), true);
+        $celular = base64_decode($array["TELEFONO"]);
+        $codigo = $array["CODIGO"];
+        $c1 = $codigo[0];
+        $c2 = $codigo[1];
+        $c3 = $codigo[2];
+        $c4 = $codigo[3];
+        $CODIGO_JUNTO = strval($c1) . strval($c2) . strval($c3) . strval($c4);
+
+        if (strlen($CODIGO_JUNTO) == 4) {
+            $Ventas =  $this->model->Validar_Codigo($CODIGO_JUNTO, $celular);
+        } else {
+            echo json_encode([0, "El código debe tener 4 dígitos", "error"]);
+            exit();
+        }
+    }
+
+
+
     function is_valid_email($str)
     {
         $matches = null;
         return (1 === preg_match('/^[A-z0-9\\._-]+@[A-z0-9][A-z0-9-]*(\\.[A-z0-9_-]+)*\\.([A-z]{2,6})$/', $str, $matches));
     }
+
     function validateEcuadorianCellphone($cellphone)
     {
         // Regular expression pattern for a valid Ecuadorian cellphone number

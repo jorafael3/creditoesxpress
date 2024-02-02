@@ -25,7 +25,7 @@ class Database{
             }else{
 
                 try{
-                    $this->pdo = new PDO("sqlsrv:Server=".$this->host.";Database=".$this->db."",$this->user,$this->password); 
+                    $this->pdo = new PDO("mysql:host=".$this->host.";dbname=".$this->db,$this->user,$this->password); 
                     $options =[
                         PDO::ATTR_ERRMODE       =>PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_EMULATE_PREPARES  =>true,

@@ -25,7 +25,7 @@
 <!--end::Head-->
 <!--begin::Body-->
 
-<body id="kt_body" data-kt-app-header-stacked="true" class="app-default">
+<body id="kt_body" data-kt-app-header-stacked="true" class="app-default bg-light">
     <!--begin::Theme mode setup on page load-->
     <script>
 
@@ -53,5 +53,5 @@
     <!--begin::App-->
 
     <!--begin::Content-->
-    <div id="kt_app_content" class="">
+    <div id="kt_app_content" class="bg-light">
         <!--begin::Row-->

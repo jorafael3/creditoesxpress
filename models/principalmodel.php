@@ -13,6 +13,146 @@ class principalmodel extends Model
         parent::__construct();
     }
 
+    function Validar_Celular($param)
+    {
+        try {
+            $celular = trim($param["celular"]);
+            $codigo = rand(1000, 9999);
+            $terminos = $param["terminos"];
+            $ip = $this->getRealIP();
+            $dispositivo = $_SERVER['HTTP_USER_AGENT'];
+
+            $this->Anular_Codigos($param);
+
+            $query = $this->db->connect_dobra()->prepare('INSERT INTO solo_telefonos 
+            (
+                numero, 
+                codigo, 
+                terminos, 
+                ip, 
+                dispositivo
+            ) 
+            VALUES(
+                :numero, 
+                :codigo, 
+                :terminos,
+                :ip, 
+                :dispositivo 
+            );
+            ');
+            $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+            $query->bindParam(":codigo", $codigo, PDO::PARAM_STR);
+            $query->bindParam(":terminos", $terminos, PDO::PARAM_STR);
+            $query->bindParam(":ip", $ip, PDO::PARAM_STR);
+            $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+
+            if ($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                $cel = base64_encode($celular);
+                $html = '
+                    <div class="fv-row mb-10 text-center">
+                        <label class="form-label fw-bold fs-2">Ingresa el codigo Enviado a tu celular</label><br>
+                        <label class="text-muted fw-bold fs-6">Verifica el numero</label>
+                        <input type="hidden" id="CEL_1" value="' . $cel . '">
+                    </div>
+                    <div class="row justify-content-center mb-5">
+                        <div class="col-md-6">
+                            <div class="verification-code">
+                                <input type="text" maxlength="1" class="form-control code-input" />
+                                <input type="text" maxlength="1" class="form-control code-input" />
+                                <input type="text" maxlength="1" class="form-control code-input" />
+                                <input type="text" maxlength="1" class="form-control code-input" />
+                            </div>
+                        </div>
+                    </div>';
+                echo json_encode([1, $celular, $html]);
+                exit();
+            } else {
+                $err = $query->errorInfo();
+                echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
+                exit();
+            }
+        } catch (PDOException $e) {
+
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
+        }
+    }
+
+    function Anular_Codigos($param)
+    {
+        try {
+            $celular = trim($param["celular"]);
+            $query = $this->db->connect_dobra()->prepare('UPDATE solo_telefonos
+            SET
+                estado = 0
+            WHERE numero = :numero
+            ');
+            $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+            if ($query->execute()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
+        }
+    }
+
+
+    function Validar_Codigo($CODIGO_JUNTO, $celular)
+    {
+        try {
+            $query = $this->db->connect_dobra()->prepare('SELECT ID from solo_telefonos
+            where numero = :numero and codigo = :codigo and estado = 1');
+            $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+            $query->bindParam(":codigo", $CODIGO_JUNTO, PDO::PARAM_STR);
+            if ($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                $cel = base64_encode($celular);
+                $html = '
+                <div class="fv-row mb-10">
+                    <label class="form-label d-flex align-items-center">
+                        <span class="required fw-bold fs-2">Cédula</span>
+                    </label>
+                    <input type="hidden" id="CEL" value="' . $cel . '">
+                    <input id="CEDULA" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
+                </div>
+                <div class="fv-row mb-10">
+                    <label class="form-label d-flex align-items-center">
+                        <span class="required fw-bold fs-2">Correo (opcional)</span>
+                    </label>
+                    <input id="CORREO" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
+                </div>
+                ';
+                if (count($result) > 0) {
+                    echo json_encode([1, $celular, $html, $result]);
+                    exit();
+                } else {
+                    echo json_encode([0, "El codigo ingresado no es el correcto", "error"]);
+                    exit();
+                }
+            } else {
+                $err = $query->errorInfo();
+                echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
+                exit();
+            }
+        } catch (PDOException $e) {
+
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
+        }
+    }
+
+
+
+
+
     function Validar_Cedula($param)
     {
         // $c = $this->CONVERT_($param["cedula"]);
