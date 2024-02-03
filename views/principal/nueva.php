@@ -102,6 +102,8 @@ require 'views/header.php';
                                     </label>
                                 </div>
 
+
+
                             </div>
                             <div class="flex-column" data-kt-stepper-element="content">
                                 <div id="SECC_COD">
@@ -110,19 +112,10 @@ require 'views/header.php';
                             </div>
                             <div class="flex-column" data-kt-stepper-element="content">
                                 <div id="SECC_CRE">
-                                    <div class="fv-row mb-10">
-                                        <label class="form-label d-flex align-items-center">
-                                            <span class="required fw-bold fs-2">Cédula</span>
-                                        </label>
-                                        <input type="hidden" id="CEL" value="' . $cel . '">
-                                        <input placeholder="xxxxxxxxxx" id="CEDULA" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="form-label d-flex align-items-center">
-                                            <span class="fw-bold fs-2">Correo (opcional)</span>
-                                        </label>
-                                        <input placeholder="xxxxxxx@mail.com" id="CORREO" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
-                                    </div>
+
+
+                                </div>
+                                <div id="SECC_APR">
 
                                 </div>
                             </div>
@@ -134,7 +127,7 @@ require 'views/header.php';
                                     Regresar
                                 </button> -->
                             </div>
-                            <div>
+                            <div id="SECC_B">
                                 <button onclick="Verificar()" type="button" class="btn btn-success fs-3 fw-bold" data-kt-stepper-action="submit">
                                     <span class="indicator-label">
                                         Verificar
@@ -169,37 +162,42 @@ require 'views/header.php';
 <?php require 'views/footer.php'; ?>
 <?php require 'funciones/guardar_js.php'; ?>
 <script>
-    var codeInputs = $('.code-input');
+    // var codeInputs = $('.code-input');
 
-    // Añadir evento de entrada para cada campo
-    codeInputs.on('input', function() {
-        // Obtener el índice del campo actual
-        var currentIndex = codeInputs.index(this);
+    // // Añadir evento de entrada para cada campo
+    // codeInputs.on('input', function() {
+    //     // Obtener el índice del campo actual
+    //     var currentIndex = codeInputs.index(this);
 
-        // Mover al siguiente campo si se ha ingresado un dígito
-        if ($(this).val().length === 1 && currentIndex < codeInputs.length - 1) {
-            codeInputs.eq(currentIndex + 1).focus();
+    //     // Mover al siguiente campo si se ha ingresado un dígito
+    //     if ($(this).val().length === 1 && currentIndex < codeInputs.length - 1) {
+    //         codeInputs.eq(currentIndex + 1).focus();
+    //     }
+    // });
+    // codeInputs.first().focus();
+
+    $(document).on('input', '.code-input', function(event) {
+        var index = $('.code-input').index(this);
+        if (event.originalEvent.inputType === 'deleteContentBackward' && index > 0) {
+            if ($(this).val() === '') {
+                index == 1 ? $('.code-input').eq(0).focus() : $('.code-input').eq(index - 1).focus();
+            }
+        } else if (index < $('.code-input').length - 1) {
+            $('.code-input').eq(index + 1).focus();
         }
     });
-    codeInputs.first().focus();
 
-    // document.addEventListener('DOMContentLoaded', function() {
-    var codeInputs = document.querySelectorAll('.code-input');
-    codeInputs.forEach(function(input, index) {
-        input.addEventListener('input', function(event) {
-            if (event.inputType === 'deleteContentBackward' && index > 0) {
-                if (this.value === '') {
-                    if (index == 1) {
-                        codeInputs[0].focus();
-                    } else {
-                        codeInputs[index - 1].focus();
-                    }
-                }
-            } else if (index < codeInputs.length - 1) {
-                // codeInputs[index + 1].focus();
-            }
-        });
+    $(document).on('keydown', '.code-input', function(event) {
+        if (event.which === 13) { // 13 is the keycode for Enter
+            event.preventDefault();
+            Validar_Codigo();
+        }
     });
-    // codeInputs[0].focus();
-    // });
+
+    $("#CELULAR").on('keydown', function(event) {
+        if (event.which === 13) { // 13 is the keycode for Enter
+            event.preventDefault();
+            Guardar_Celular();
+        }
+    });
 </script>

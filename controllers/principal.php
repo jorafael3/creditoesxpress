@@ -63,7 +63,42 @@ class Principal extends Controller
         }
     }
 
+    function Validar_Cedula()
+    {
+        $array = json_decode(file_get_contents("php://input"), true);
+        if (trim($array["cedula"]) == null || trim($array["cedula"]) == "") {
+            echo json_encode([0, "Debe ingresar un numero de Cédula valido", "error"]);
+            exit();
+        } else {
+            $length = strlen(trim($array["cedula"]));
+            if ($length >= 10 && $length <= 13) {
+                if (ctype_digit(trim($array["cedula"]))) {
+                    $cedula = trim($array["cedula"]);
+                    $email = trim($array["email"]);
+                    if ($email == "") {
+                        $Ventas =  $this->model->Validar_Cedula($array);
+                    } else {
+                        $VAL_EMAIL = $this->is_valid_email($email);
+                        if ($VAL_EMAIL == true) {
+                            $Ventas =  $this->model->Validar_Cedula($array);
+                        } else {
+                            echo json_encode([0, "El email no es valido", ""]);
+                        }
+                    }
 
+                    // $_SESSION["CED"] = "";
+                    // $_SESSION["CED"] = trim($array["cedula"]);
+                    // $Ventas =  $this->model->Validar_Cedula($array);
+                } else {
+                    echo json_encode([0, "La cédula solo debe ser numérica", ""]);
+                    exit();
+                }
+            } else {
+                echo json_encode([0, "La cédula ingresada no tiene la cantidad de numeros correcta", ""]);
+                exit();
+            }
+        }
+    }
 
     function is_valid_email($str)
     {
@@ -80,25 +115,31 @@ class Principal extends Controller
         return preg_match($pattern, $cellphone);
     }
 
-    function Validar_Cedula()
+    function validarCedulaEcuador($cedula)
     {
-        global $globalVar;
-        $array = json_decode(file_get_contents("php://input"), true);
-        if (trim($array["cedula"]) == null || trim($array["cedula"]) == "") {
-            echo json_encode(["Debe ingresar un numero de ruc / Cédula", "error"]);
-        } else {
-            $length = strlen(trim($array["cedula"]));
-            if ($length >= 10 && $length <= 13) {
-                if (ctype_digit(trim($array["cedula"]))) {
-                    $_SESSION["CED"] = "";
-                    $_SESSION["CED"] = trim($array["cedula"]);
-                    $Ventas =  $this->model->Validar_Cedula($array);
-                } else {
-                    echo json_encode(["La cédula solo debe ser numérica", "error"]);
-                }
-            } else {
-                echo json_encode(["La cédula ingresada no tiene la cantidad de numeros correcta", "error"]);
-            }
+        // Verificar longitud correcta
+        if (strlen($cedula) != 10) {
+            return false;
         }
+
+        // Verificar que los primeros dígitos sean numéricos
+        if (!ctype_digit(substr($cedula, 0, 9))) {
+            return false;
+        }
+
+        // Obtener el dígito verificador
+        $digitoVerificador = (int) substr($cedula, 9, 1);
+
+        // Calcular el dígito verificador esperado
+        $suma = 0;
+        for ($i = 0; $i < 9; $i++) {
+            $valor = (int) substr($cedula, $i, 1);
+            $suma += ($i % 2 == 0) ? $valor : ($valor * 2 > 9 ? $valor * 2 - 9 : $valor * 2);
+        }
+
+        $digitoEsperado = ($suma % 10 === 0) ? 0 : 10 - ($suma % 10);
+
+        // Comparar con el dígito verificador proporcionado
+        return $digitoVerificador == $digitoEsperado;
     }
 }

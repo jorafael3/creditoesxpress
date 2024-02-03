@@ -120,13 +120,13 @@ class principalmodel extends Model
                         <span class="required fw-bold fs-2">Cédula</span>
                     </label>
                     <input type="hidden" id="CEL" value="' . $cel . '">
-                    <input id="CEDULA" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
+                    <input placeholder="xxxxxxxxxx" id="CEDULA" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
                 </div>
                 <div class="fv-row mb-10">
                     <label class="form-label d-flex align-items-center">
-                        <span class="required fw-bold fs-2">Correo (opcional)</span>
+                        <span class="fw-bold fs-2">Correo (opcional)</span>
                     </label>
-                    <input id="CORREO" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
+                    <input placeholder="xxxxxxx@mail.com" id="CORREO" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
                 </div>
                 ';
                 if (count($result) > 0) {
@@ -150,142 +150,137 @@ class principalmodel extends Model
     }
 
 
-
-
-
     function Validar_Cedula($param)
     {
-        // $c = $this->CONVERT_($param["cedula"]);
-        // return $c;
-        // echo json_encode($c);
-        // exit();
         try {
-            $cedula = $param["cedula"];
-            $query = $this->db->connect_dobra()->prepare('{CALL SGO_Consulta_ActualizacionDatos (?) }');
-            $query->bindParam(1, $cedula, PDO::PARAM_STR);
-            if ($query->execute()) {
-                $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
-                if (count($result) > 0) {
-                    $NOMBRE = explode(" ", $result[0]["Nombres"]);
-                    $NOMBRE_FINAL = [];
-                    for ($i = 0; $i < count($NOMBRE); $i++) {
-                        // print_r($n);
-                        if (strlen($NOMBRE[$i]) <= 2) {
-                            $string = $NOMBRE[$i];
-                            $n = $string[0] . "*";
-                        } else if (strlen($NOMBRE[$i]) == 3) {
-                            $string = $NOMBRE[$i];
-                            $n = $string[0] . "**";
+            $VAL_CEDULA = $this->Obtener_Datos_Cedula($param);
+            if ($VAL_CEDULA[0] == 1) {
+                $VAL_CREDITO = $this->Obtener_Datos_Credito($param);
+                if ($VAL_CREDITO[0] == 1) {
+                    $DATOS_CEDULA = $VAL_CEDULA[1];
+                    $DATOS_CREDITO = $VAL_CREDITO[1];
+                    $cedula = trim($param["cedula"]);
+                    $email = trim($param["email"]);
+                    $celular = base64_decode(trim($param["celular"]));
+
+                    $nombre = $DATOS_CEDULA[0]["nombre"];
+                    $edad = $DATOS_CEDULA[0]["edad"];
+                    $ciudad = $DATOS_CEDULA[0]["ciudad"];
+                    $estado_civil = $DATOS_CEDULA[0]["estado_civil"];
+                    $ip = $this->getRealIP();
+                    $dispositivo = $_SERVER['HTTP_USER_AGENT'];
+
+                    $query = $this->db->connect_dobra()->prepare('INSERT INTO 
+                    creditos_solicitado
+                    (
+                        cedula, 
+                        celular, 
+                        nombre, 
+                        edad, 
+                        email, 
+                        ip, 
+                        dispositivo
+                    ) 
+                    VALUES
+                    (
+                        :cedula, 
+                        :celular, 
+                        :nombre, 
+                        :edad, 
+                        :email, 
+                        :ip, 
+                        :dispositivo
+                    );
+                    ');
+                    $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
+                    $query->bindParam(":celular", $celular, PDO::PARAM_STR);
+                    $query->bindParam(":nombre", $nombre, PDO::PARAM_STR);
+                    $query->bindParam(":edad", $edad, PDO::PARAM_STR);
+                    $query->bindParam(":email", $email, PDO::PARAM_STR);
+                    $query->bindParam(":ip", $ip, PDO::PARAM_STR);
+                    $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+
+                    if ($query->execute()) {
+                        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                        if ($DATOS_CREDITO[0]["Aprobado"] == 1) {
+                            $html = '  
+                            <div class="text-center">
+                                <h1 class="text-primary">FELICITACIONES</h1>
+                                <h3>Tu crédito ha sido aprobado</h3>
+                                <h3>un asesor se contactara contigo</h3>
+                            </div>';
                         } else {
-                            $n = $this->CONVERT_($NOMBRE[$i]);
+                            $html = '  
+                            <div class="text-center">
+                                <h1 class="text-danger">CREDITO NO APROBADO</h1>
+                                <h3>No cumples con los requisitos para el credito</h3>
+                                <h3></h3>
+                            </div>';
                         }
-                        array_push($NOMBRE_FINAL, $n);
-                        // $NOMBRE_FINAL = $NOMBRE_FINAL . " " . $this->CONVERT_($n); 0957374382
-                    }
-
-                    // foreach ($result as $key => $value) {
-                    //     if ($key != "Celular" || $key != "Cédula" || $key != "Email" || $key != "Nombres") {
-                    //     } else {
-                    //         print_r($value);
-                    //         $NOMBRE =  $NOMBRE . $value;
-                    //     }
-                    // }
-
-                    $email = $result[0]["Email"];
-                    $EMAIL_TOTAL = "";
-                    if ($email != "") {
-                        $email = explode("@", $email);
-                        $email1 = $this->CONVERT_E($email[0]);
-                        $email2 = $this->CONVERT_E($email[1]);
-                        $EMAIL_TOTAL =  $email1 . "@" . $email2;
-                    }
-                    $CELULAR = $result[0]["Celular"];
-                    if ($CELULAR == "") {
-                        $CELULAR = $this->CONVERT_C($result[0]["Celular"]);
-                    }
-                    $ARRAY = [
-                        array(
-                            "Nombre" => implode(" ", $NOMBRE_FINAL),
-                            "Celular" => $CELULAR,
-                            "Email" => $EMAIL_TOTAL,
-                        )
-                    ];
-
-                    // echo json_encode($ARRAY);
-                    // exit();
-                    if (count($result) > 0) {
-                        $INJ = '
-                        <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
-                                <span class="required">Nombres</span>
-                            </label>
-                            <input disabled autocomplete="off" onkeypress="return soloLetras(event)" onblur="limpia()" id="nombres" required type="text" class="form-control form-control-solid" placeholder="" name="cedula">
-                        </div> 
-                        <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
-                                <span class="required">Email</span>
-                            </label>
-                            <input autocomplete="off" id="email" required type="text" class="form-control form-control-solid" placeholder="" name="cedula">
-                        </div>
-    
-                        <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
-                                <span class="required">Teléfono</span>
-                            </label>
-                            <input onkeypress="return valideKey(event);" maxlength="10" id="telefono" required type="text" class="form-control form-control-solid" placeholder="" name="cedula">
-                        </div>
-                       
-                        <div class="fv-row mb-8 fv-plugins-icon-container">
-                            <label class="form-check form-check-inline">
-                                <input checked id="check_pd" class="form-check-input" type="checkbox" name="toc" value="1">
-                                <span class="form-check-label fw-semibold text-gray-700 fs-base ms-1 fs-7">
-                                He leído y acepto el tratamiendo de datos personales, recibir información 
-                                personalizada, descuentos y promociones exclusivas de CARTIMEX por cualquier medio.</span>
-                            </label>
-                        </div>
-                        <div class="fv-row mb-8 fv-plugins-icon-container">
-                            <label class="form-check form-check-inline">
-                                <input checked id="check_g" class="form-check-input" type="checkbox" name="toc" value="1">
-                                <span class="form-check-label fw-semibold text-gray-700 fs-base ms-1">
-                                Términos y Condiciones</a></span>
-                                <a href="#!"   onclick="openmodal1()" class="ms-1 link-primary">
-                                Términos y Políticas de Privacidad*</a></span>
-                            </label>
-                        </div>
-    
-                        <div class="text-center">
-                            <button onclick="Guardar_datos()" type="submit" id="kt_modal_new_target_submit" class="btn btn-primary" name="n">
-                                <span class="indicator-label">Continuar </span>
-                                <span class="indicator-progress">Please wait...
-                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                            </button>
-                        </div>
-    
-                            ';
-
-                        echo json_encode([$ARRAY, $INJ]);
-                        exit();
+                        echo json_encode([1, $DATOS_CEDULA, $DATOS_CREDITO, $html]);
                     } else {
-                        echo json_encode([]);
+                        $err = $query->errorInfo();
+                        echo json_encode([0, "error al verificar información", "Intentelo de nuevo", $err]);
                         exit();
                     }
-                    // $this->Generador_pdf();
                 } else {
-                    echo json_encode(["La cédula no es correcta o no existe", "error"]);
+                    echo json_encode([0, "No se pudo realizar la verificacion", "Intentelo de nuevo", "error"]);
+                    exit();
                 }
             } else {
-                $err = $query->errorInfo();
-                echo json_encode($err);
+                echo json_encode([0, "No se pudo realizar la verificacion", "Asegurese que la cédula ingresada sea la correcta", "error"]);
                 exit();
             }
         } catch (PDOException $e) {
-
             $e = $e->getMessage();
-            echo json_encode($e);
+            echo json_encode([0, "No se pudo realizar la verificacion", "Intentelo de nuevo", $e]);
             exit();
         }
     }
+
+
+    function Obtener_Datos_Cedula($param)
+    {
+        $cedula = trim($param["cedula"]);
+        $ARRAY = [array(
+            "nombre" => "Jorge Alvarado",
+            "edad" => "29",
+            "ciudad" => "Guayaquil",
+            "estado_civil" => "soltero",
+        )];
+
+        if (count($ARRAY) == 0) {
+            return [0, $ARRAY];
+        } else {
+            return [1, $ARRAY];
+        }
+    }
+
+    function Obtener_Datos_Credito($param)
+    {
+        $cedula = trim($param["cedula"]);
+        $ARRAY = [array(
+            "Aprobado" => 1,
+            "motivo" => "Cumple los requisitos",
+        )];
+        return [1, $ARRAY];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     function CONVERT_($string)
     {

@@ -2,12 +2,14 @@
 
 $url_Validar_Celular = constant('URL') . 'principal/Validar_Celular/';
 $url_Validar_Codigo = constant('URL') . 'principal/Validar_Codigo/';
+$url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
 
 ?>
 
 <script>
     var url_Validar_Celular = '<?php echo $url_Validar_Celular ?>';
     var url_Validar_Codigo = '<?php echo $url_Validar_Codigo ?>';
+    var url_Validar_Cedula = '<?php echo $url_Validar_Cedula ?>';
 
     var TELEFONO;
 
@@ -26,50 +28,49 @@ $url_Validar_Codigo = constant('URL') . 'principal/Validar_Codigo/';
 
     // Initialize Stepper
     var stepper = new KTStepper(element);
-
     // Handle next step
     stepper.on("kt.stepper.next", function(stepper) {
 
         if (stepper.getCurrentStepIndex() === 1) {
-            // var celularInput = document.querySelector("#CELULAR");
-            // celularInput = celularInput.value.trim();
-            // if (celularInput == "") {
-            //     Mensaje("Debe ingresar un numero celular", "", "error");
-            //     $("#CELULAR").focus();
-            //     return false;
-            // } else if (celularInput.length != 10) {
-            //     Mensaje("Debe ingresar un numero celular valido", "", "error");
-            //     $("#CELULAR").focus();
-            //     return false;
-            // } else {
-            //     let terminos = $("#TERMINOS").is(":checked");
-            //     if (terminos == false) {
-            //         Mensaje("Debe aceptar los terminos y condiciones para continuar", "", "error");
-            //         return false;
-            //     } else {
-            //         Guardar_Celular();
-            //     }
-            // }
+            var celularInput = document.querySelector("#CELULAR");
+            celularInput = celularInput.value.trim();
+            if (celularInput == "") {
+                Mensaje("Debe ingresar un numero celular", "", "error");
+                $("#CELULAR").focus();
+                return false;
+            } else if (celularInput.length != 10) {
+                Mensaje("Debe ingresar un numero celular valido", "", "error");
+                $("#CELULAR").focus();
+                return false;
+            } else {
+                let terminos = $("#TERMINOS").is(":checked");
+                if (terminos == false) {
+                    Mensaje("Debe aceptar los terminos y condiciones para continuar", "", "error");
+                    return false;
+                } else {
+                    Guardar_Celular();
+                }
+            }
             // var codeInputs = $('.code-input');
             // codeInputs.first().focus();
-            stepper.goNext();
+            // stepper.goNext();
 
         }
         if (stepper.getCurrentStepIndex() === 2) {
             // var codeInputs = $('.code-input');
             // codeInputs.first().focus();
-            // Validar_Codigo();
-            stepper.goNext();
+            Validar_Codigo();
+            // stepper.goNext();
         }
 
-        stepper.goNext();
+        // stepper.goNext();
     });
+
     stepper.on("kt.stepper.previous", function(stepper) {
         // stepper.goPrevious();
     });
 
-
-    function Guardar_Celular(callback) {
+    function Guardar_Celular() {
         let cel = $("#CELULAR").val();
         let terminos = $("#TERMINOS").is(":checked");
         let param = {
@@ -84,6 +85,8 @@ $url_Validar_Codigo = constant('URL') . 'principal/Validar_Codigo/';
                 TELEFONO = x[1];
                 $("#SECC_COD").append(x[2]);
                 stepper.goNext();
+                var codeInputs = $('.code-input');
+                codeInputs.first().focus();
             } else {
                 Mensaje(x[1], "", x[2]);
             }
@@ -131,10 +134,20 @@ $url_Validar_Codigo = constant('URL') . 'principal/Validar_Codigo/';
             Mensaje("Debe ingresar un número de cédula valido", "", "error")
         } else {
             let param = {
-                cedula: cedula,
+                cedula: Cedula,
                 celular: cel,
                 email: email
             }
+            AjaxSendReceiveData(url_Validar_Cedula, param, function(x) {
+                console.log('x: ', x);
+                if (x[0] == 1) {
+                    $("#SECC_CRE").empty();
+                    $("#SECC_B").empty();
+                    $("#SECC_APR").append(x[3]);
+                } else {
+                    Mensaje(x[1], x[2], "error")
+                }
+            })
         }
     }
 
@@ -150,6 +163,7 @@ $url_Validar_Codigo = constant('URL') . 'principal/Validar_Codigo/';
         $(this).val(cleanedValue);
     });
 
+    
 
     function AjaxSendReceiveData(url, data, callback) {
         var xmlhttp = new XMLHttpRequest();
