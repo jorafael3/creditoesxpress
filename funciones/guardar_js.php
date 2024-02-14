@@ -80,15 +80,20 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
         console.log('param: ', param);
 
         AjaxSendReceiveData(url_Validar_Celular, param, function(x) {
-            console.log('x: ', x);
+            console.log('xdd: ', x);
             if (x[0] == 1) {
                 TELEFONO = x[1];
                 $("#SECC_COD").append(x[2]);
                 stepper.goNext();
                 var codeInputs = $('.code-input');
                 codeInputs.first().focus();
+            } else if (x[0] == 2) {
+                $("#SECC_CEL").empty();
+                $("#SECC_B").empty();
+                $("#SECC_CEL").append(x[3]);
             } else {
                 Mensaje(x[1], "", x[2]);
+
             }
         });
     }
@@ -163,7 +168,7 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
         $(this).val(cleanedValue);
     });
 
-    
+
 
     function AjaxSendReceiveData(url, data, callback) {
         var xmlhttp = new XMLHttpRequest();
