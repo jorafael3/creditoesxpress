@@ -42,7 +42,7 @@ require 'views/header.php';
     }
 
     #form-container {
-        background-image: url('https://lh3.googleusercontent.com/qYJtNus3vCThuUrqVZwq7K4Ckq9Dwxo6Ea58hFHQUwX90VwezB_-I4etbFHAVBL77wXkDZf0ByUuHijqFb_KelTprIMPnvMUvG5rvJAcoq_zD5nGJzFK_vCDKlOy5Ix2rA=w1280');
+        background-image: url('<?php echo constant("URL") ?>/public/img/fondo.jpg');
         background-size: cover;
         background-position: center;
         min-height: 100vh;
@@ -57,17 +57,14 @@ require 'views/header.php';
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div class="col-5">
-                        <img style="width: 100%;" src="https://lh5.googleusercontent.com/_QUNz9ix-1QXYTt_EYIKXhGCYR1k9Alfjlqg2-_9PRO32DrOlG0vD3kM5iao9kuPl_IwM3Mr89IsYj4VwOmhUn4=w1280" alt="">
+                        <img style="width: 100%;" src="<?php echo constant("URL") ?>/public/img/logo.png" alt="">
                     </div>
                     <div class="col-8">
-                        <img style="width: 100%;" src="https://lh5.googleusercontent.com/ZbZpdd6vzkMna7UHbhJeFJ-zwmhDFYUrLwTqDYlvLdj-xMUpabGdRENrfcW-pp8q2K1PTouq5U8xRUWVpIICsLy9q7k568mjWz7LKyXzvsQOIyMvNwISetVSIeiKCQs8vw=w1280" alt="">
+                        <img style="width: 100%;" src="<?php echo constant("URL") ?>/public/img/credito.png" alt="">
                     </div>
                 </div>
-
-
                 <div class="stepper stepper-pills" id="kt_stepper_example_basic">
                     <div class="stepper-nav flex-center flex-wrap mb-5">
-
                         <div class="stepper-item current" data-kt-stepper-element="nav">
                             <div class="stepper-wrapper d-flex align-items-center">
                                 <!-- <div class="stepper-icon w-40px h-40px">
