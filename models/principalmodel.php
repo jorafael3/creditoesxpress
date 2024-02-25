@@ -515,3 +515,10 @@ class principalmodel extends Model
     }
 
 
+
+    //https://apidatoscedula20240216081841.azurewebsites.net/api/GetData?code=FXs4nBycLJmBacJWuk_olF_7thXybtYRFDDyaRGKbnphAzFuQulUlA==&id=bzj8gix/XnXTZF6EZclk7UPQxvRaupeSC1LLlsaWhRI=&emp=SALVACERO&subp=DATOSCEDULA
+
+
+
+
+}
