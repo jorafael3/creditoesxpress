@@ -8,7 +8,7 @@ if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     $http = "http://";
 }
 // echo $u;
-define('URL',$http.$u.'/creditoexpress/');// ip local:puerto
+define('URL',$http.$u.'/creditoesxpress/');// ip local:puerto
 // define('HOST', '10.5.1.86');
 // define('DB', 'CARTIMEX');
 // define('USER', 'jalvarado');
