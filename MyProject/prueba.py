@@ -39,11 +39,17 @@ def run_csharp_file_with_parameter(parameter):
         
 def Guardar_encrypt(cedula_encr,cedula):
         try:
+            # conexion = mysql.connector.connect(
+            #     host="localhost",
+            #     user="root",
+            #     password="",
+            #     database="crediweb"
+            # )
             conexion = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="crediweb"
+                host="50.87.184.179",
+                user="wsoqajmy_jorge",
+                password="Equilivre3*",
+                database="wsoqajmy_crediweb"
             )
             cursor = conexion.cursor()
             consulta = """
@@ -65,13 +71,21 @@ def Guardar_encrypt(cedula_encr,cedula):
 def Cargar_Datos():
     while True:
         try:
-            time.sleep(0.5)
+            # time.sleep(0.5)
+            # conexion = mysql.connector.connect(
+            #     host="localhost",
+            #     user="root",
+            #     password="",
+            #     database="crediweb"
+            # )
             conexion = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="crediweb"
+                host="50.87.184.179",
+                user="wsoqajmy_jorge",
+                password="Equilivre3*",
+                database="wsoqajmy_crediweb"
             )
+
+
             if conexion.is_connected():
                 # print("Conexión establecida")
                 pass

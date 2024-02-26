@@ -1,9 +1,6 @@
 <?php
 
-
 // require_once "models/logmodel.php";
-
-
 
 class principalmodel extends Model
 {
@@ -386,7 +383,7 @@ class principalmodel extends Model
             $VAL_CEDULA_ = $this->Validar_si_cedula_existe($param);
             // $VAL_CEDULA = $this->consulta_api_cedula();
             $VAL_CEDULA = $this->Obtener_Datos_Cedula($param);
-            // echo json_encode($VAL_CEDULA);
+            echo json_encode($VAL_CEDULA);
             if ($VAL_CEDULA[0] == 1) {
                 $VAL_CREDITO = $this->Obtener_Datos_Credito($param);
                 if ($VAL_CREDITO[0] == 1) {
@@ -467,7 +464,7 @@ class principalmodel extends Model
                     exit();
                 }
             } else {
-                echo json_encode([0, "No se pudo realizar la verificacion", "Asegurese que la cédula ingresada sea la correcta", "error"]);
+                echo json_encode([0, "No se pudo realizar la verificacion", "Asegureseo que la cédula ingresada sea la correcta", "error"]);
                 exit();
             }
         } catch (PDOException $e) {
@@ -568,6 +565,8 @@ class principalmodel extends Model
                         //     $arr = $en[1];
                         //     break;
                         // }
+                    } else {
+                        return [0, "INTENTE DE NUEVO"];
                     }
                 }
                 // }
