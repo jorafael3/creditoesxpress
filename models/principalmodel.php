@@ -22,6 +22,7 @@ class principalmodel extends Model
             $dispositivo = $_SERVER['HTTP_USER_AGENT'];
 
             $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
+            // $SI_CONSULTO = 1;
 
             if ($SI_CONSULTO == 1) {
                 $this->Anular_Codigos($param);
@@ -273,19 +274,25 @@ class principalmodel extends Model
                             exit();
                         }
                     } else {
-
+                        $html = '
+                        <div class="alert alert-primary" role="alert">
+                            <div class="p-3">
+                                <h4 class="text-dark">Este número ya ha hecho una consulta anterior</h4>
+                                <h4 class="text-dark">se registro con los siguientes datos:</h4>
+                                <hr>
+                                <h4 class="text-dark">Fecha: ' . $fecha_creado . '</h4>
+                                <h4 class="text-dark">Cédula: ' . $CEDULA . '</h4>
+                                <h4 class="text-dark">Correo: ' . $CORREO . '</h4>
+                            </div> 
+                        </div> 
+                        <div class="text-center mt-3">
+                            <h1 class="text-primary">FELICITACIONES</h1>
+                            <h3>Usted esta apto para acceder a un credito con nosotros</h3>
+                            <h3>un asesor se contactara con usted en breve</h3>
+                        </div>';
                         if ($CREDITO == 1) {
                             $html = '
-                            <div class="alert alert-primary" role="alert">
-                                <div class="p-3">
-                                    <h4 class="text-dark">Este número ya ha hecho una consulta anterior</h4>
-                                    <h4 class="text-dark">se registro con los siguientes datos:</h4>
-                                    <hr>
-                                    <h4 class="text-dark">Fecha: ' . $fecha_creado . '</h4>
-                                    <h4 class="text-dark">Cédula: ' . $CEDULA . '</h4>
-                                    <h4 class="text-dark">Correo: ' . $CORREO . '</h4>
-                                </div> 
-                            </div> 
+                          
                             <div class="text-center mt-3">
                                 <h1 class="text-primary">FELICITACIONES</h1>
                                 <h3>Usted esta apto para acceder a un credito con nosotros</h3>
@@ -293,16 +300,7 @@ class principalmodel extends Model
                             </div>';
                         } else {
                             $html = '  
-                            <div class="alert alert-danger" role="alert">
-                                <div class="p-3">
-                                    <h4 class="text-dark">Este número ya ha hecho una consulta anterior}</h4>
-                                    <h4 class="text-dark">se registro con los siguientes datos:</h4>
-                                    <hr>
-                                    <h4 class="text-dark">Fecha: ' . $fecha_creado . '</h4>
-                                    <h4 class="text-dark">Cédula: ' . $CEDULA . '</h4>
-                                    <h4 class="text-dark">Correo: ' . $CORREO . '</h4>
-                                </div> 
-                            </div> 
+                          
                             <div class="text-center mt-3">
                                 <h1 class="text-danger">Usted no cumple con todos los requisitos necesarios para acceder a un credito</h1>
                                 <h3>un asesor se contactara con usted en breve</h3>
