@@ -51,11 +51,13 @@ class principalmodel extends Model
                 if ($query->execute()) {
                     $result = $query->fetchAll(PDO::FETCH_ASSOC);
                     $cel = base64_encode($celular);
+                    $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
                     $html = '
                         <div class="fv-row mb-10 text-center">
                             <label class="form-label fw-bold fs-2">Ingresa el código enviado a tu celular</label><br>
                             <label class="text-muted fw-bold fs-6">Verifica el número celular</label>
                             <input type="hidden" id="CEL_1" value="' . $cel . '">
+                            <input type="text" id="CEL_1" value="' . $codigo_temporal . '">
                         </div>
                         <div class="row justify-content-center mb-5">
                                     <div class="col-md-12">
@@ -82,6 +84,31 @@ class principalmodel extends Model
                     echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
                     exit();
                 }
+            }
+        } catch (PDOException $e) {
+
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
+        }
+    }
+
+    function Cargar_Codigo_Temporal($param)
+    {
+        try {
+            $celular = trim($param["celular"]);
+
+            $query = $this->db->connect_dobra()->prepare('SELECT * FROM solo_telefonos
+                Where numero = :numero and estado = 1');
+            $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+
+            if ($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return ($result[0]["codigo"]);
+            } else {
+                $err = $query->errorInfo();
+                echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
+                exit();
             }
         } catch (PDOException $e) {
 
@@ -373,7 +400,6 @@ class principalmodel extends Model
             exit();
         }
     }
-
     //** CEDULA */
 
     function Validar_Cedula($param)
@@ -383,7 +409,7 @@ class principalmodel extends Model
             $VAL_CEDULA_ = $this->Validar_si_cedula_existe($param);
             // $VAL_CEDULA = $this->consulta_api_cedula();
             $VAL_CEDULA = $this->Obtener_Datos_Cedula($param);
-            echo json_encode($VAL_CEDULA);
+            // echo json_encode($VAL_CEDULA);
             if ($VAL_CEDULA[0] == 1) {
                 $VAL_CREDITO = $this->Obtener_Datos_Credito($param);
                 if ($VAL_CREDITO[0] == 1) {
@@ -454,6 +480,7 @@ class principalmodel extends Model
                             </div>';
                         }
                         echo json_encode([1, $DATOS_CEDULA, $DATOS_CREDITO, $html]);
+                        exit();
                     } else {
                         $err = $query->errorInfo();
                         echo json_encode([0, "error al verificar información", "Intentelo de nuevo", $err]);
@@ -602,6 +629,20 @@ class principalmodel extends Model
         )];
         return [1, $ARRAY];
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     function CONVERT_($string)
