@@ -145,13 +145,13 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
             }
             AjaxSendReceiveData(url_Validar_Cedula, param, function(x) {
                 console.log('x: ', x);
-                if (x[0] == 1) {
-                    $("#SECC_CRE").empty();
-                    $("#SECC_B").empty();
-                    $("#SECC_APR").append(x[3]);
-                } else {
-                    Mensaje(x[1], x[2], "error")
-                }
+                // if (x[0] == 1) {
+                //     $("#SECC_CRE").empty();
+                //     $("#SECC_B").empty();
+                //     $("#SECC_APR").append(x[3]);
+                // } else {
+                //     Mensaje(x[1], x[2], "error")
+                // }
             })
         }
     }
@@ -184,13 +184,6 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
             }
         });
 
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var data = this.responseText;
-                data = JSON.parse(data);
-                callback(data);
-            }
-        }
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var data = this.responseText;

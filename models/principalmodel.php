@@ -383,7 +383,10 @@ class principalmodel extends Model
     {
         try {
 
+            $VAL_CEDULA_ = $this->Validar_si_cedula_existe($param);
+            // $VAL_CEDULA = $this->consulta_api_cedula();
             $VAL_CEDULA = $this->Obtener_Datos_Cedula($param);
+            // echo json_encode($VAL_CEDULA);
             if ($VAL_CEDULA[0] == 1) {
                 $VAL_CREDITO = $this->Obtener_Datos_Credito($param);
                 if ($VAL_CREDITO[0] == 1) {
@@ -393,39 +396,25 @@ class principalmodel extends Model
                     $email = trim($param["email"]);
                     $celular = base64_decode(trim($param["celular"]));
 
-                    $nombre = $DATOS_CEDULA[0]["nombre"];
-                    $fecha_nacimiento = $DATOS_CEDULA[0]["fecha_nacimiento"];
-                    $codigo_dactilar = $DATOS_CEDULA[0]["codigo_dactilar"];
+                    $nombre = $DATOS_CEDULA[0]->NOMBRES;
+                    $fecha_nacimiento = $DATOS_CEDULA[0]->FECHA_NACIM;
+                    $codigo_dactilar = $DATOS_CEDULA[0]->INDIVIDUAL_DACTILAR;
+                    $CANT_DOM = $DATOS_CEDULA[0]->CANT_DOM;
                     $ip = $this->getRealIP();
                     $dispositivo = $_SERVER['HTTP_USER_AGENT'];
-
                     $credito_aprobado = $DATOS_CREDITO[0]["Aprobado"];
 
-                    $query = $this->db->connect_dobra()->prepare('INSERT INTO 
-                    creditos_solicitados
-                    (
-                        cedula, 
-                        numero, 
-                        correo,
-                        nombre_cliente, 
-                        fecha_nacimiento, 
-                        codigo_dactilar,
-                        credito_aprobado,
-                        ip,
-                        dispositivo
-                    ) 
-                    VALUES
-                    (
-                        :cedula, 
-                        :numero, 
-                        :correo, 
-                        :nombre_cliente, 
-                        :fecha_nacimiento, 
-                        :codigo_dactilar, 
-                        :credito_aprobado,
-                        :ip,
-                        :dispositivo
-                    );
+                    $query = $this->db->connect_dobra()->prepare('UPDATE creditos_solicitados
+                    SET
+                        numero = :numero, 
+                        correo = :correo,
+                        nombre_cliente = :nombre_cliente, 
+                        fecha_nacimiento = :fecha_nacimiento, 
+                        codigo_dactilar = :codigo_dactilar,
+                        credito_aprobado = :credito_aprobado,
+                        ip = :ip,
+                        dispositivo = :dispositivo
+                    WHERE cedula = :cedula
                     ');
                     $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
                     $query->bindParam(":numero", $celular, PDO::PARAM_STR);
@@ -488,21 +477,122 @@ class principalmodel extends Model
         }
     }
 
-    function Obtener_Datos_Cedula($param)
-    {
-        $cedula = trim($param["cedula"]);
-        $ARRAY = [array(
-            "nombre" => "Jorge Alvarado",
-            "fecha_nacimiento" => "1994-12-04",
-            "codigo_dactilar" => "vasdsw",
-        )];
 
-        if (count($ARRAY) == 0) {
-            return [0, $ARRAY];
-        } else {
-            return [1, $ARRAY];
+    function Validar_si_cedula_existe($param)
+    {
+        try {
+            $cedula = trim($param["cedula"]);
+            $query = $this->db->connect_dobra()->prepare('SELECT * from
+                creditos_solicitados
+                WHERE cedula = :cedula
+            ');
+            $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
+            if ($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                if (count($result) > 0) {
+                    return [1, $result];
+                } else {
+                    $query = $this->db->connect_dobra()->prepare('INSERT INTO 
+                    creditos_solicitados
+                    (
+                        cedula
+                    ) 
+                    VALUES
+                    (
+                        :cedula
+                    );
+                    ');
+                    $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
+                    if ($query->execute()) {
+                        return [0];
+                    } else {
+                        return [0];
+                    }
+                }
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
         }
     }
+
+    function consulta_api_cedula($cedula_encr)
+    {
+        // $cedula_encr = "yt3TIGS4cvQQt3+q6iQ2InVubHr4hm4V7cxn1V3jFC0=";
+        $url = 'https://apidatoscedula20240216081841.azurewebsites.net/api/GetData?code=FXs4nBycLJmBacJWuk_olF_7thXybtYRFDDyaRGKbnphAzFuQulUlA==&id=' . $cedula_encr . '&emp=SALVACERO&subp=DATOSCEDULA';
+        $response = file_get_contents($url);
+        if ($response === false) {
+            return 'Error al obtener la respuesta';
+        } else {
+            $data = json_decode($response);
+
+            if (isset($data->error)) {
+                return [0, $data->error, $cedula_encr];
+            } else {
+                if (count(($data->DATOS)) > 0) {
+                    return [1, $data->DATOS];
+                } else {
+                    return [0, $data->DATOS];
+                }
+            }
+        }
+    }
+
+    function Obtener_Datos_Cedula($param)
+    {
+        try {
+            sleep(2);
+            $cedula = trim($param["cedula"]);
+            $arr = "";
+            // while (true) {
+            $query = $this->db->connect_dobra()->prepare("SELECT 
+                cedula,
+                cedula_encr
+                FROM creditos_solicitados
+                WHERE cedula = :cedula");
+            $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
+            if ($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                if (count($result) > 0) {
+                    $encry = trim($result[0]["cedula_encr"]);
+
+                    if ($encry != null) {
+                        $en = $this->consulta_api_cedula($encry);
+                        return $en;
+                        // echo json_encode($en[1]);
+                        // exit();
+                        // if ($en[0] == 1) {
+                        //     $arr = $en[1];
+                        //     break;
+                        // }
+                    }
+                }
+                // }
+            }
+        } catch (PDOException $e) {
+
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
+        }
+
+
+        // $ARRAY = [array(
+        //     "nombre" => "Jorge Alvarado",
+        //     "fecha_nacimiento" => "1994-12-04",
+        //     "codigo_dactilar" => "vasdsw",
+        // )];
+
+        // if (count($ARRAY) == 0) {
+        //     return [0, $ARRAY];
+        // } else {
+        //     return [1, $ARRAY];
+        // }
+    }
+
 
     function Obtener_Datos_Credito($param)
     {
@@ -514,10 +604,6 @@ class principalmodel extends Model
         return [1, $ARRAY];
     }
 
-
-
-
-    
 
     function CONVERT_($string)
     {
@@ -538,7 +624,7 @@ class principalmodel extends Model
         // $result = preg_replace('/([A-Z])([A-Z]+)/', '$1*' . str_repeat('*', strlen('$2')), $string);
         // echo $result; // Output: "DE LA E*E R****O N******S F******O"
     }
-    
+
     function CONVERT_C($string)
     {
         //$string = "jorge";
