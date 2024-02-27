@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\xampp\\htdocs\\creditoesxpress\\MyProject\\MyProject.csproj": {}
+    "C:\\xampp\\htdocs\\creditoexpress\\MyProject\\MyProject.csproj": {}
   },
   "projects": {
-    "C:\\xampp\\htdocs\\creditoesxpress\\MyProject\\MyProject.csproj": {
+    "C:\\xampp\\htdocs\\creditoexpress\\MyProject\\MyProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\xampp\\htdocs\\creditoesxpress\\MyProject\\MyProject.csproj",
+        "projectUniqueName": "C:\\xampp\\htdocs\\creditoexpress\\MyProject\\MyProject.csproj",
         "projectName": "MyProject",
-        "projectPath": "C:\\xampp\\htdocs\\creditoesxpress\\MyProject\\MyProject.csproj",
+        "projectPath": "C:\\xampp\\htdocs\\creditoexpress\\MyProject\\MyProject.csproj",
         "packagesPath": "C:\\Users\\Jorge Alvarado\\.nuget\\packages\\",
-        "outputPath": "C:\\xampp\\htdocs\\creditoesxpress\\MyProject\\obj\\",
+        "outputPath": "C:\\xampp\\htdocs\\creditoexpress\\MyProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Jorge Alvarado\\AppData\\Roaming\\NuGet\\NuGet.Config"

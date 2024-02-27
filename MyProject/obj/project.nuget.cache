@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "q3eOeMg4bNi188hyifD5BztfOof8jlQbqmQMpr5stP1neIwpm8TPz+GsLMrdyfocAyLEBGoSZKHh9YdvMyy6qQ==",
+  "dgSpecHash": "1cV++qAm1mesRNAoW1GJbQ6bF/EMwOc2cj5Nw72iUlNjRfWN65z/JazSDCugJrMj0xVKY6DzWTlEyZC18I0XQg==",
   "success": true,
-  "projectFilePath": "C:\\xampp\\htdocs\\creditoesxpress\\MyProject\\MyProject.csproj",
+  "projectFilePath": "C:\\xampp\\htdocs\\creditoexpress\\MyProject\\MyProject.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
