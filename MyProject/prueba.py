@@ -68,6 +68,7 @@ def Guardar_encrypt(cedula_encr,cedula):
 
 def Cargar_Datos():
     while True:
+        
         try:
             # time.sleep(0.5)
             # conexion = mysql.connector.connect(

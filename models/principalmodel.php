@@ -16,75 +16,81 @@ class principalmodel extends Model
     {
         try {
             $celular = trim($param["celular"]);
-            $codigo = rand(1000, 9999);
-            $terminos = $param["terminos"];
-            $ip = $this->getRealIP();
-            $dispositivo = $_SERVER['HTTP_USER_AGENT'];
+            $codigo = $this->Api_Sms($celular);
+            if ($codigo[0] == 1) {
+                $terminos = $param["terminos"];
+                $ip = $this->getRealIP();
+                $dispositivo = $_SERVER['HTTP_USER_AGENT'];
 
-            $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
-            // $SI_CONSULTO = 1;
+                $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
+                // $SI_CONSULTO = 1;
 
-            if ($SI_CONSULTO == 1) {
-                $this->Anular_Codigos($param);
-                $query = $this->db->connect_dobra()->prepare('INSERT INTO solo_telefonos 
-                    (
-                        numero, 
-                        codigo, 
-                        terminos, 
-                        ip, 
-                        dispositivo
-                    ) 
-                    VALUES
-                    (
-                        :numero, 
-                        :codigo, 
-                        :terminos,
-                        :ip, 
-                        :dispositivo 
-                    );
-                ');
-                $query->bindParam(":numero", $celular, PDO::PARAM_STR);
-                $query->bindParam(":codigo", $codigo, PDO::PARAM_STR);
-                $query->bindParam(":terminos", $terminos, PDO::PARAM_STR);
-                $query->bindParam(":ip", $ip, PDO::PARAM_STR);
-                $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+                if ($SI_CONSULTO == 1) {
+                    $this->Anular_Codigos($param);
+                    $query = $this->db->connect_dobra()->prepare('INSERT INTO solo_telefonos 
+                        (
+                            numero, 
+                            codigo, 
+                            terminos, 
+                            ip, 
+                            dispositivo
+                        ) 
+                        VALUES
+                        (
+                            :numero, 
+                            :codigo, 
+                            :terminos,
+                            :ip, 
+                            :dispositivo 
+                        );
+                    ');
+                    $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+                    $query->bindParam(":codigo", $codigo[1], PDO::PARAM_STR);
+                    $query->bindParam(":terminos", $terminos, PDO::PARAM_STR);
+                    $query->bindParam(":ip", $ip, PDO::PARAM_STR);
+                    $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
 
-                if ($query->execute()) {
-                    $result = $query->fetchAll(PDO::FETCH_ASSOC);
-                    $cel = base64_encode($celular);
-                    $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
-                    $html = '
-                        <div class="fv-row mb-10 text-center">
-                            <label class="form-label fw-bold fs-2">Ingresa el código enviado a tu celular</label><br>
-                            <label class="text-muted fw-bold fs-6">Verifica el número celular</label>
-                            <input type="hidden" id="CEL_1" value="' . $cel . '">
-                            <input type="text" id="CEL_1" value="' . $codigo_temporal . '">
-                        </div>
-                        <div class="row justify-content-center mb-5">
-                                    <div class="col-md-12">
-                                        <div class="row justify-content-center">
-                                            <div class="col-auto">
-                                                <input type="text" maxlength="1" class="form-control code-input" />
-                                            </div>
-                                            <div class="col-auto">
-                                                <input type="text" maxlength="1" class="form-control code-input" />
-                                            </div>
-                                            <div class="col-auto">
-                                                <input type="text" maxlength="1" class="form-control code-input" />
-                                            </div>
-                                            <div class="col-auto">
-                                                <input type="text" maxlength="1" class="form-control code-input" />
+                    if ($query->execute()) {
+                        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                        $cel = base64_encode($celular);
+                        $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
+                        $html = '
+                            <div class="fv-row mb-10 text-center">
+                                <label class="form-label fw-bold fs-2">Ingresa el código enviado a tu celular</label><br>
+                                <label class="text-muted fw-bold fs-6">Verifica el número celular</label>
+                                <input type="hidden" id="CEL_1" value="' . $cel . '">
+                                <input type="text" id="CEL_1" value="' . $codigo_temporal . '">
+                            </div>
+                            <div class="row justify-content-center mb-5">
+                                        <div class="col-md-12">
+                                            <div class="row justify-content-center">
+                                                <div class="col-auto">
+                                                    <input type="text" maxlength="1" class="form-control code-input" />
+                                                </div>
+                                                <div class="col-auto">
+                                                    <input type="text" maxlength="1" class="form-control code-input" />
+                                                </div>
+                                                <div class="col-auto">
+                                                    <input type="text" maxlength="1" class="form-control code-input" />
+                                                </div>
+                                                <div class="col-auto">
+                                                    <input type="text" maxlength="1" class="form-control code-input" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                        </div>';
-                    echo json_encode([1, $celular, $html]);
-                    exit();
-                } else {
-                    $err = $query->errorInfo();
-                    echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
-                    exit();
+                            </div>';
+                        echo json_encode([1, $celular, $html]);
+                        exit();
+                    } else {
+                        $err = $query->errorInfo();
+                        echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
+                        exit();
+                    }
                 }
+
+            } else {
+                echo json_encode([0, "Error al generar código, por favor intentelo en un momento", "error"]);
+                exit();
             }
         } catch (PDOException $e) {
 
@@ -92,6 +98,74 @@ class principalmodel extends Model
             echo json_encode($e);
             exit();
         }
+    }
+
+    function Api_Sms($celular)
+    {
+        $url = 'https://api.smsplus.net.ec/sms/client/api.php/sendMessage';
+        // $url = 'http://186.3.87.6/sms/ads/api.php/getMessage';
+
+        $codigo = rand(1000, 9999);
+        // $curl = curl_init($url);
+        // curl_setopt($curl, CURLOPT_URL, $url);
+        // curl_setopt($curl, CURLOPT_POST, true);
+        // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // $username = '999990165';
+        // $password = 'bt3QVPyQ6L8e97hs';
+
+        // $headers = [
+        //     'Accept: application/json',
+        //     'Content-Type: application/json',
+        // ];
+        // curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        // $phoneNumber = $celular;
+        // $messageId = "141569";
+        // // $transactionId = 141569;
+        // $dataVariable = [$codigo, "asd"];
+        // $transactionId = uniqid();
+
+        // $dataWs = [
+        //     'phoneNumber' => $phoneNumber,
+        //     'messageId' => $messageId,
+        //     'transactionId' => $transactionId,
+        //     'dataVariable' => $dataVariable,
+        // ];
+
+        // curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($dataWs));
+
+        // // Set Basic Authentication
+        // curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        // curl_setopt($curl, CURLOPT_USERPWD, "$username:$password");
+
+        // // for debug only!
+        // curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        // $resp = curl_exec($curl);
+        // curl_close($curl);
+        $resp = '{"codError":100,"desError":"OK","transactionId":"240305230212179130"}';
+
+        $responseData = json_decode($resp, true);
+
+        // Verificar si la solicitud fue exitosa
+        // Verificar el código de error y mostrar la respuesta
+        if (isset($responseData['codError'])) {
+            if ($responseData['codError'] == 100) {
+                // echo "Mensaje enviado correctamente. Transaction ID: ";
+                // echo json_encode("");
+                return [1, $codigo];
+            } else {
+                return [0, 0];
+                // echo "Error: " . $responseData['desError'];
+            }
+        } else {
+            return [0, 0];
+            // echo "Error desconocido al enviar el mensaje.";
+        }
+        // echo json_encode($resp);
+        // exit();
     }
 
     function Cargar_Codigo_Temporal($param)
