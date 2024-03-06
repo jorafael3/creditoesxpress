@@ -4,7 +4,7 @@ import time
 import mysql.connector
 from mysql.connector import Error
 
-
+TIPO_CON = 0
 
 # def Cargar_Datos():
 #     cursor = conexion.cursor()
@@ -20,7 +20,7 @@ def run_csharp_file_with_parameter(parameter):
     # Ruta al archivo ejecutable de .NET Core
     dotnet_executable = "C:\\Program Files\\dotnet\\dotnet.exe"
     # Ruta al archivo C# que deseas ejecutar
-    csharp_file = "C:\\xampp\\htdocs\\creditoexpress\\MyProject\\bin\\Debug\\net8.0\\MyProject.dll"
+    csharp_file = "C:\\xampp\\htdocs\\creditoexpress\\MyProject\\bin\\Debug\\net6.0\\MyProject.dll"
     # Construye el comando para ejecutar el archivo C# con el parámetro
     command = [dotnet_executable, csharp_file, parameter]
     # Ejecuta el comando
@@ -36,18 +36,18 @@ def run_csharp_file_with_parameter(parameter):
         
 def Guardar_encrypt(cedula_encr,cedula):
         try:
-            # conexion = mysql.connector.connect(
-            #     host="localhost",
-            #     user="root",
-            #     password="",
-            #     database="crediweb"
-            # )
             conexion = mysql.connector.connect(
-                host="50.87.184.179",
-                user="wsoqajmy_jorge",
-                password="Equilivre3*",
-                database="wsoqajmy_crediweb"
+                host="localhost",
+                user="root",
+                password="",
+                database="crediweb"
             )
+            # conexion = mysql.connector.connect(
+            #     host="50.87.184.179",
+            #     user="wsoqajmy_jorge",
+            #     password="Equilivre3*",
+            #     database="wsoqajmy_crediweb"
+            # )
 
             cursor = conexion.cursor()
             consulta = """
@@ -70,19 +70,19 @@ def Cargar_Datos():
     while True:
         
         try:
-            # time.sleep(0.5)
-            # conexion = mysql.connector.connect(
-            #     host="localhost",
-            #     user="root",
-            #     password="",
-            #     database="crediweb"
-            # )
+            time.sleep(0.5)
             conexion = mysql.connector.connect(
-                host="50.87.184.179",
-                user="wsoqajmy_jorge",
-                password="Equilivre3*",
-                database="wsoqajmy_crediweb"
+                host="localhost",
+                user="root",
+                password="",
+                database="crediweb"
             )
+            # conexion = mysql.connector.connect(
+            #     host="50.87.184.179",
+            #     user="wsoqajmy_jorge",
+            #     password="Equilivre3*",
+            #     database="wsoqajmy_crediweb"
+            # )
 
 
             if conexion.is_connected():
@@ -97,7 +97,7 @@ def Cargar_Datos():
             print(len(resultados))
             for row in resultados:
                 print(row[0])
-                cedula_encr = run_csharp_file_with_parameter("0931531115")
+                cedula_encr = run_csharp_file_with_parameter(row[0])
                 Guardar_encrypt(cedula_encr,row[0])
                 print(cedula_encr)
             # Cerrar cursor y conexión

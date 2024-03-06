@@ -198,7 +198,28 @@ require 'views/header.php';
                 </button>
             </div>
             <div class="modal-body">
-                ...
+
+                <body>
+                    <h1>Términos y Condiciones</h1>
+                    <h2>Declaración de Capacidad legal y sobre la Aceptación</h2>
+                    <p>Por este medio, por mis propios y personales derechos de manera libre y voluntaria, declaro que soy mayor de edad, ecuatoriano o extranjero en residencia legal en el Ecuador y me encuentro en capacidad y habilidad legal para obligarme y suscribir todo tipo de acto jurídico según las normas del Código Civil y del Ordenamiento Jurídico Ecuatoriano, por lo cual, SALVACERO CIA. LTDA no tiene responsabilidad alguna sobre la condición jurídica previa o posterior del declarante, siendo responsabilidad exclusiva del usuario que autoriza la correcta utilización de los medios electrónicos utilizados para acceder a este canal digital y la conciencia de su habilidad o capacidad civil. En tal sentido, SALVACERO CIA. LTDA, una vez expuestos estos términos y condiciones, asume la aceptación como legítima.</p>
+
+                    <h2>Autorizaciones</h2>
+
+                    <h3>1. Autorización de consulta y almacenamiento de información del Registro Civil y de datos biométricos:</h3>
+                    <p>Autorizo de manera libre y voluntaria a SALVACERO CIA. LTDA a registrar y almacenar mis patrones biométricos para autenticación facial en este canal transaccional, para lo cual me comprometo a seguir los pasos para su registro previstos en el propio canal, así como, a cumplir las instrucciones que SALVACERO CIA. LTDA. determine, cuando necesite acceder y realizar transacciones en la plataforma. Además, declaro conocer con suficiencia en qué consiste esta modalidad de autenticación.</p>
+
+                    <h3>2. Autorización de consulta de información de comportamiento crediticio:</h3>
+                    <p>Autorizo de manera libre y voluntaria a SALVACERO CIA. LTDA y a quien sea el futuro cesionario, beneficiario o acreedor del crédito solicitado o del documento o título valor que lo respalde para que obtenga cuantas veces sean necesarias, de cualquier fuente de información, incluidos los burós de crédito, mi información de riesgos crediticios. De igual forma SALVACERO CIA. LTDA o quien sea el futuro cesionario, beneficiario o acreedor del crédito solicitado o del documento o título cambiario que lo respalde queda expresamente autorizado para que pueda transferir o entregar dicha información a los burós de crédito y/o a la Central de Riesgos si fuere pertinente. En este sentido declaro de manera libre y voluntaria que he sido informado previamente por SALVACERO CIA. LTDA. y/o sus comercios afiliados y que cuento con pleno conocimiento de:</p>
+                    <ol>
+                        <li>La existencia de las bases de datos de información necesaria únicamente para la prestación del servicio de referencias crediticias; su contenido; su finalidad; y, sus potenciales destinatarios;</li>
+                        <li>Las posibles consecuencias del uso de la información; y,</li>
+                        <li>Los derechos que me asisten y las garantías relacionadas con ellos.</li>
+                    </ol>
+
+                    <h3>3. Autorización para actividades de mercadeo:</h3>
+                    <p>Autorizo de manera libre y voluntaria a SALVACERO CIA. LTDA a incorporar mis datos en bases de datos propias o de terceros para actividades de mercadeo directo. Conozco que he sido informado que, en caso de revocatoria de la presente autorización, deberé hacerlo de manera expresa a través de la página web de SALVACERO CIA. LTDA.</p>
+                </body>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="$('#exampleModalLong').modal('hide')" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
