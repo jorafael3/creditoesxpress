@@ -16,17 +16,17 @@ class principalmodel extends Model
     {
         try {
             $celular = trim($param["celular"]);
-            $codigo = $this->Api_Sms($celular);
-            if ($codigo[0] == 1) {
-                $terminos = $param["terminos"];
-                $ip = $this->getRealIP();
-                $dispositivo = $_SERVER['HTTP_USER_AGENT'];
+            $terminos = $param["terminos"];
+            $ip = $this->getRealIP();
+            $dispositivo = $_SERVER['HTTP_USER_AGENT'];
 
-                $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
-                // $SI_CONSULTO = 1;
+            $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
+            // $SI_CONSULTO = 1;
 
-                if ($SI_CONSULTO == 1) {
-                    $this->Anular_Codigos($param);
+            if ($SI_CONSULTO == 1) {
+                $this->Anular_Codigos($param);
+                $codigo = $this->Api_Sms($celular);
+                if ($codigo[0] == 1) {
                     $query = $this->db->connect_dobra()->prepare('INSERT INTO solo_telefonos 
                         (
                             numero, 
