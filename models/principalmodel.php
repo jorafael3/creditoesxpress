@@ -53,13 +53,14 @@ class principalmodel extends Model
                     if ($query->execute()) {
                         $result = $query->fetchAll(PDO::FETCH_ASSOC);
                         $cel = base64_encode($celular);
-                        $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
+                        $codigo_temporal = "0000";
+                        // $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
                         $html = '
                             <div class="fv-row mb-10 text-center">
                                 <label class="form-label fw-bold fs-2">Ingresa el código enviado a tu celular</label><br>
                                 <label class="text-muted fw-bold fs-6">Verifica el número celular</label>
                                 <input type="hidden" id="CEL_1" value="' . $cel . '">
-                                <input type="text" id="CEL_1" value="' . $codigo_temporal . '">
+                                <input type="hidden" id="CEL_1" value="' . $codigo_temporal . '">
                             </div>
                             <div class="row justify-content-center mb-5">
                                         <div class="col-md-12">
