@@ -105,46 +105,46 @@ class principalmodel extends Model
         // $url = 'http://186.3.87.6/sms/ads/api.php/getMessage';
 
         $codigo = rand(1000, 9999);
-        // $curl = curl_init($url);
-        // curl_setopt($curl, CURLOPT_URL, $url);
-        // curl_setopt($curl, CURLOPT_POST, true);
-        // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-        // $username = '999990165';
-        // $password = 'bt3QVPyQ6L8e97hs';
+        $username = '999990165';
+        $password = 'bt3QVPyQ6L8e97hs';
 
-        // $headers = [
-        //     'Accept: application/json',
-        //     'Content-Type: application/json',
-        // ];
-        // curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $headers = [
+            'Accept: application/json',
+            'Content-Type: application/json',
+        ];
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
-        // $phoneNumber = $celular;
-        // $messageId = "144561";
-        // // $transactionId = 141569;
-        // $dataVariable = [$codigo];
-        // $transactionId = uniqid();
+        $phoneNumber = $celular;
+        $messageId = "144561";
+        // $transactionId = 141569;
+        $dataVariable = [$codigo];
+        $transactionId = uniqid();
 
-        // $dataWs = [
-        //     'phoneNumber' => $phoneNumber,
-        //     'messageId' => $messageId,
-        //     'transactionId' => $transactionId,
-        //     'dataVariable' => $dataVariable,
-        // ];
+        $dataWs = [
+            'phoneNumber' => $phoneNumber,
+            'messageId' => $messageId,
+            'transactionId' => $transactionId,
+            'dataVariable' => $dataVariable,
+        ];
 
-        // curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($dataWs));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($dataWs));
 
-        // // Set Basic Authentication
-        // curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        // curl_setopt($curl, CURLOPT_USERPWD, "$username:$password");
+        // Set Basic Authentication
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($curl, CURLOPT_USERPWD, "$username:$password");
 
-        // // for debug only!
-        // curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        // for debug only!
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-        // $resp = curl_exec($curl);
-        // curl_close($curl);
-        $resp = '{"codError":100,"desError":"OK","transactionId":"240305230212179130"}';
+        $resp = curl_exec($curl);
+        curl_close($curl);
+        // $resp = '{"codError":100,"desError":"OK","transactionId":"240305230212179130"}';
 
         $responseData = json_decode($resp, true);
 
