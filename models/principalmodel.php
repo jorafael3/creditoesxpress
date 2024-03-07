@@ -333,6 +333,7 @@ class principalmodel extends Model
                                                 </div>';
                                 }
                                 echo json_encode([2, $result, $DATOS_CREDITO, $html]);
+                                exit();
                             } else {
                                 $err = $query->errorInfo();
                                 echo json_encode([0, "error al verificar información", "Intentelo de nuevo", $err]);
