@@ -42,7 +42,7 @@ require 'views/header.php';
     }
 
     #form-container {
-        background-image: url('<?php echo constant("URL") ?>/public/img/fondo.jpg');
+        background-image: url('<?php echo constant("URL") ?>/public/img/SV24BackgroundLC.jpg');
         background-size: cover;
         background-position: center;
         min-height: 100vh;
@@ -57,10 +57,10 @@ require 'views/header.php';
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div class="col-5">
-                        <img style="width: 100%;" src="<?php echo constant("URL") ?>/public/img/logo.png" alt="">
+                        <img style="width: 100%;" src="<?php echo constant("URL") ?>/public/img/SV24 - Logos LC_Salvacero.png" alt="">
                     </div>
                     <div class="col-8">
-                        <img style="width: 100%;" src="<?php echo constant("URL") ?>/public/img/credito.png" alt="">
+                        <img style="width: 100%;" src="<?php echo constant("URL") ?>/public/img/SV24 - Logos LC_Credito.png" alt="">
                     </div>
                 </div>
                 <div class="stepper stepper-pills" id="kt_stepper_example_basic">
@@ -123,10 +123,17 @@ require 'views/header.php';
                         <div class="mb-5">
                             <div class="flex-column current" data-kt-stepper-element="content">
                                 <div id="SECC_CEL">
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-5">
                                         <label class="form-label fw-bold fs-1">Ingresa tu número celular</label>
                                         <h6 class="text-muted">Se enviará un código de verificación para validar el número</h6>
                                         <input placeholder="xxxxxxxxxx" id="CELULAR" type="text" class="form-control form-control-solid" name="input1" placeholder="" value="" />
+                                    </div>
+                                    <div class="fv-row mb-5">
+                                        <label class="form-check form-check-custom form-check-solid">
+                                            <a class="fw-bold text-success" href="#!" onclick="$('#exampleModalreq').modal('show')">
+                                                Ver requisitos
+                                            </a>
+                                        </label>
                                     </div>
                                     <div class="fv-row mb-10">
                                         <label class="form-label">Terminos y condiciones</label>
@@ -229,6 +236,62 @@ require 'views/header.php';
 </div>
 
 
+<div class="modal fade" id="exampleModalreq" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Requisitos</h5>
+                <button class="btn" type="button" onclick="$('#exampleModalreq').modal('hide')" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <body>
+                    <h1>Requisitos para solicitud de préstamo</h1>
+                    <ul>
+                        <li><strong>Edad:</strong> 21-63 años</li>
+                        <li><strong>Documentos de identificación:</strong> Copia de cédula y certificado de votación.</li>
+                        <li><strong>Comprobante de residencia:</strong> Planilla de servicios básicos (máximo un mes anterior al vigente).</li>
+                        <li><strong>Referencias personales:</strong> 3 referencias (celular) personales y 1 laboral (jefe o compañero).</li>
+                        <li><strong>Monto del préstamo:</strong> Mínimo $600 | Máximo $2.500</li>
+                        <li><strong>Plazo del préstamo:</strong> Mínimo 6 meses | Máximo 36 meses</li>
+                        <li><strong>Tasa de interés:</strong> La tasa de interés de la financiera es del 16.06% anual.</li>
+                    </ul>
+                </body>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="$('#exampleModalreq').modal('hide')" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Meta Pixel Code -->
+<script>
+    ! function(f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function() {
+            n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1534955887076711');
+    fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1534955887076711&ev=PageView&noscript=1" /></noscript>
+<!-- End Meta Pixel Code -->
 
 
 <link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />

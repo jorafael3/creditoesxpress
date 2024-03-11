@@ -300,30 +300,29 @@ class principalmodel extends Model
 
                             if ($query->execute()) {
                                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
-                                $html = '  
-                                <div class="alert alert-primary" role="alert">
-                                    <div class="p-3">
-                                        <h4 class="text-dark">Este número ya ha hecho una consulta anterior</h4>
-                                        <h4 class="text-dark">se registro con los siguientes datos:</h4>
-                                        <hr>
-                                        <h4 class="text-dark">Fecha: ' . $fecha_creado . '</h4>
-                                        <h4 class="text-dark">Cédula: ' . $CEDULA . '</h4>
-                                        <h4 class="text-dark">Correo: ' . $CORREO . '</h4>
-                                    </div> 
-                                </div> 
-                                <div class="text-center">
-                                    <h1 class="text-primary">FELICITACIONES</h1>
-                                    <h3>Usted esta apto para acceder a un credito con nosotros</h3>
-                                    <h3>un asesor se contactara con usted en breve</h3>
-                                </div>';
+                                // $html = '  
+                                // <div class="alert alert-primary" role="alert">
+                                //     <div class="p-3">
+                                //         <h4 class="text-dark">Este número ya ha hecho una consulta anterior</h4>
+                                //         <h4 class="text-dark">se registro con los siguientes datos:</h4>
+                                //         <hr>
+                                //         <h4 class="text-dark">Fecha: ' . $fecha_creado . '</h4>
+                                //         <h4 class="text-dark">Cédula: ' . $CEDULA . '</h4>
+                                //         <h4 class="text-dark">Correo: ' . $CORREO . '</h4>
+                                //     </div> 
+                                // </div> 
+                                // <div class="text-center">
+                                //     <h1 class="text-primary">FELICITACIONES</h1>
+                                //     <h3>Usted esta apto para acceder a un credito con nosotros</h3>
+                                //     <h3>un asesor se contactara con usted en breve</h3>
+                                // </div>';
+                                $link = constant("URL") . "/public/img/SV24 - Mensajes LC_Proceso.png";
 
                                 if ($DATOS_CREDITO[0]["Aprobado"] == 1) {
-                                    $html = '  
-                                                <div class="text-center">
-                                                    <h1 class="text-primary">FELICITACIONES</h1>
-                                                    <h3>Usted esta apto para acceder a un credito con nosotros</h3>
-                                                    <h3>un asesor se contactara con usted en breve</h3>
-                                                </div>';
+                                    $html = '
+                                        <div class="text-center mt-3">
+                                            <img style="width: 100%;" src="' . $link . '" alt="">
+                                        </div>';
                                 } else {
                                     $html = '  
                                                 <div class="text-center">
@@ -364,12 +363,11 @@ class principalmodel extends Model
                             <h3>Usted esta apto para acceder a un credito con nosotros</h3>
                             <h3>un asesor se contactara con usted en breve</h3>
                         </div>';
+                        $link = constant("URL") . "/public/img/SV24 - Mensajes LC_Proceso.png";
                         if ($CREDITO == 1) {
                             $html = '
                             <div class="text-center mt-3">
-                                <h1 class="text-primary">FELICITACIONES</h1>
-                                <h3>Usted esta apto para acceder a un credito con nosotros</h3>
-                                <h3>un asesor se contactara con usted en breve</h3>
+                                <img style="width: 100%;" src="' . $link . '" alt="">
                             </div>';
                         } else {
                             $html = '  
@@ -440,7 +438,7 @@ class principalmodel extends Model
                         <label class="form-label d-flex align-items-center">
                             <span class="fw-bold fs-2">Número de teléfono</span><br>
                         </label>
-                        <h6 class="text-muted">Este número se asociará a la cédula que ingrese</h6>
+                        <h6 class="text-muted">Ten en cuenta que este número se asociará a la cédula que ingrese para proximas consultas</h6>
                         <input readonly id="" type="text" class="form-control form-control-solid" name="input1" value="' . $celular . '" />
                     </div>
                     <div class="fv-row mb-10">
@@ -542,13 +540,12 @@ class principalmodel extends Model
                                 $query_cant_con->bindParam(":numero", $celular, PDO::PARAM_STR);
                                 $query_cant_con->execute();
 
+                                $link = constant("URL") . "/public/img/SV24 - Mensajes LC_Proceso.png";
 
                                 if ($DATOS_CREDITO[0]["Aprobado"] == 1) {
-                                    $html = '  
-                                    <div class="text-center">
-                                        <h1 class="text-primary">FELICITACIONES</h1>
-                                        <h3>Usted esta apto para acceder a un credito con nosotros</h3>
-                                        <h3>un asesor se contactara con usted en breve</h3>
+                                    $html = '
+                                    <div class="text-center mt-3">
+                                        <img style="width: 100%;" src="' . $link . '" alt="">
                                     </div>';
                                 } else {
                                     $html = '  

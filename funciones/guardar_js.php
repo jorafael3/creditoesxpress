@@ -77,10 +77,10 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
             celular: cel,
             terminos: terminos
         }
-        console.log('param: ', param);
+        
 
         AjaxSendReceiveData(url_Validar_Celular, param, function(x) {
-            console.log('xdd: ', x);
+            
             if (x[0] == 1) {
                 TELEFONO = x[1];
                 $("#SECC_COD").append(x[2]);
@@ -117,9 +117,9 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
                 TELEFONO: $("#CEL_1").val(),
                 CODIGO: valores
             }
-            console.log('param: ', param);
+            
             AjaxSendReceiveData(url_Validar_Codigo, param, function(x) {
-                console.log('x: ', x);
+                
                 if (x[0] == 1) {
                     $("#SECC_CRE").append(x[2]);
                     stepper.goNext();
@@ -144,7 +144,7 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
                 email: email
             }
             AjaxSendReceiveData(url_Validar_Cedula, param, function(x) {
-                console.log('x: ', x);
+                
                 if (x[0] == 1) {
                     $("#SECC_CRE").empty();
                     $("#SECC_B").empty();

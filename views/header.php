@@ -9,8 +9,9 @@
 <head>
     <base href="" />
     <meta charset="utf-8" />
+    <title>Crédito Express</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
+    <link rel="shortcut icon" href="<?php echo constant('URL') ?>public/img/SV24 - Logos LC_Icon.png" />
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!--end::Fonts-->
