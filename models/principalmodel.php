@@ -102,67 +102,75 @@ class principalmodel extends Model
 
     function Api_Sms($celular)
     {
-        $url = 'https://api.smsplus.net.ec/sms/client/api.php/sendMessage';
-        // $url = 'http://186.3.87.6/sms/ads/api.php/getMessage';
 
-        $codigo = rand(1000, 9999);
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        try {
 
-        $username = '999990165';
-        $password = 'bt3QVPyQ6L8e97hs';
+            $url = 'https://api.smsplus.net.ec/sms/client/api.php/sendMessage';
+            // $url = 'http://186.3.87.6/sms/ads/api.php/getMessage';
 
-        $headers = [
-            'Accept: application/json',
-            'Content-Type: application/json',
-        ];
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            $codigo = rand(1000, 9999);
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-        $phoneNumber = $celular;
-        $messageId = "144561";
-        // $transactionId = 141569;
-        $dataVariable = [$codigo];
-        $transactionId = uniqid();
+            $username = '999990165';
+            $password = 'bt3QVPyQ6L8e97hs';
 
-        $dataWs = [
-            'phoneNumber' => $phoneNumber,
-            'messageId' => $messageId,
-            'transactionId' => $transactionId,
-            'dataVariable' => $dataVariable,
-        ];
+            $headers = [
+                'Accept: application/json',
+                'Content-Type: application/json',
+            ];
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($dataWs));
+            $phoneNumber = $celular;
+            $messageId = "144561";
+            // $transactionId = 141569;
+            $dataVariable = [$codigo];
+            $transactionId = uniqid();
 
-        // Set Basic Authentication
-        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($curl, CURLOPT_USERPWD, "$username:$password");
+            $dataWs = [
+                'phoneNumber' => $phoneNumber,
+                'messageId' => $messageId,
+                'transactionId' => $transactionId,
+                'dataVariable' => $dataVariable,
+            ];
 
-        // for debug only!
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($dataWs));
 
-        $resp = curl_exec($curl);
-        curl_close($curl);
-        // $resp = '{"codError":100,"desError":"OK","transactionId":"240305230212179130"}';
+            // Set Basic Authentication
+            curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($curl, CURLOPT_USERPWD, "$username:$password");
 
-        $responseData = json_decode($resp, true);
+            // for debug only!
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-        // Verificar si la solicitud fue exitosa
-        // Verificar el código de error y mostrar la respuesta
-        if (isset($responseData['codError'])) {
-            if ($responseData['codError'] == 100) {
-                // echo "Mensaje enviado correctamente. Transaction ID: ";
-                // echo json_encode("");
-                return [1, $codigo, $responseData];
+            $resp = curl_exec($curl);
+            curl_close($curl);
+            // $resp = '{"codError":100,"desError":"OK","transactionId":"240305230212179130"}';
+
+            $responseData = json_decode($resp, true);
+
+            // Verificar si la solicitud fue exitosa
+            // Verificar el código de error y mostrar la respuesta
+            if (isset($responseData['codError'])) {
+                if ($responseData['codError'] == 100) {
+                    // echo "Mensaje enviado correctamente. Transaction ID: ";
+                    // echo json_encode("");
+                    return [1, $codigo, $responseData];
+                } else {
+                    return [0, 0];
+                    // echo "Error: " . $responseData['desError'];
+                }
             } else {
                 return [0, 0];
-                // echo "Error: " . $responseData['desError'];
+                // echo "Error desconocido al enviar el mensaje.";
             }
-        } else {
+        } catch (Exception $e) {
+
+            $e = $e->getMessage();
             return [0, 0];
-            // echo "Error desconocido al enviar el mensaje.";
         }
         // echo json_encode($resp);
         // exit();
@@ -317,20 +325,23 @@ class principalmodel extends Model
                                 //     <h3>un asesor se contactara con usted en breve</h3>
                                 // </div>';
                                 $link = constant("URL") . "/public/img/SV24 - Mensajes LC_Proceso.png";
-
-                                if ($DATOS_CREDITO[0]["Aprobado"] == 1) {
-                                    $html = '
-                                        <div class="text-center mt-3">
-                                            <img style="width: 100%;" src="' . $link . '" alt="">
-                                        </div>';
-                                } else {
-                                    $html = '  
-                                                <div class="text-center">
-                                                    <h1 class="text-danger">Usted no cumple con todos los requisitos necesarios para acceder a un credito</h1>
-                                                    <h3>un asesor se contactara con usted en breve</h3>
-                                                    <h3></h3>
-                                                </div>';
-                                }
+                                $html = '
+                                <div class="text-center mt-3">
+                                    <img style="width: 100%;" src="' . $link . '" alt="">
+                                </div>';
+                                // if ($DATOS_CREDITO[0]["Aprobado"] == 1) {
+                                //     $html = '
+                                //         <div class="text-center mt-3">
+                                //             <img style="width: 100%;" src="' . $link . '" alt="">
+                                //         </div>';
+                                // } else {
+                                //     $html = '  
+                                //                 <div class="text-center">
+                                //                     <h1 class="text-danger">Usted no cumple con todos los requisitos necesarios para acceder a un credito</h1>
+                                //                     <h3>un asesor se contactara con usted en breve</h3>
+                                //                     <h3></h3>
+                                //                 </div>';
+                                // }
                                 echo json_encode([2, $result, $DATOS_CREDITO, $html]);
                                 exit();
                             } else {
@@ -347,36 +358,40 @@ class principalmodel extends Model
                         //     exit();
                         // }
                     } else {
-                        $html = '
-                        <div class="alert alert-primary" role="alert">
-                            <div class="p-3">
-                                <h4 class="text-dark">Este número ya ha hecho una consulta anterior</h4>
-                                <h4 class="text-dark">se registro con los siguientes datos:</h4>
-                                <hr>
-                                <h4 class="text-dark">Fecha: ' . $fecha_creado . '</h4>
-                                <h4 class="text-dark">Cédula: ' . $CEDULA . '</h4>
-                                <h4 class="text-dark">Correo: ' . $CORREO . '</h4>
-                            </div> 
-                        </div> 
-                        <div class="text-center mt-3">
-                            <h1 class="text-primary">FELICITACIONES</h1>
-                            <h3>Usted esta apto para acceder a un credito con nosotros</h3>
-                            <h3>un asesor se contactara con usted en breve</h3>
-                        </div>';
+                        // $html = '
+                        // <div class="alert alert-primary" role="alert">
+                        //     <div class="p-3">
+                        //         <h4 class="text-dark">Este número ya ha hecho una consulta anterior</h4>
+                        //         <h4 class="text-dark">se registro con los siguientes datos:</h4>
+                        //         <hr>
+                        //         <h4 class="text-dark">Fecha: ' . $fecha_creado . '</h4>
+                        //         <h4 class="text-dark">Cédula: ' . $CEDULA . '</h4>
+                        //         <h4 class="text-dark">Correo: ' . $CORREO . '</h4>
+                        //     </div> 
+                        // </div> 
+                        // <div class="text-center mt-3">
+                        //     <h1 class="text-primary">FELICITACIONES</h1>
+                        //     <h3>Usted esta apto para acceder a un credito con nosotros</h3>
+                        //     <h3>un asesor se contactara con usted en breve</h3>
+                        // </div>';
                         $link = constant("URL") . "/public/img/SV24 - Mensajes LC_Proceso.png";
-                        if ($CREDITO == 1) {
-                            $html = '
-                            <div class="text-center mt-3">
-                                <img style="width: 100%;" src="' . $link . '" alt="">
-                            </div>';
-                        } else {
-                            $html = '  
-                            <div class="text-center mt-3">
-                                <h1 class="text-danger">Usted no cumple con todos los requisitos necesarios para acceder a un credito</h1>
-                                <h3>un asesor se contactara con usted en breve</h3>
-                                <h3></h3>
-                            </div>';
-                        }
+                        // if ($CREDITO == 1) {
+                        //     $html = '
+                        //     <div class="text-center mt-3">
+                        //         <img style="width: 100%;" src="' . $link . '" alt="">
+                        //     </div>';
+                        // } else {
+                        //     $html = '  
+                        //     <div class="text-center mt-3">
+                        //         <h1 class="text-danger">Usted no cumple con todos los requisitos necesarios para acceder a un credito</h1>
+                        //         <h3>un asesor se contactara con usted en breve</h3>
+                        //         <h3></h3>
+                        //     </div>';
+                        // }
+                        $html = '
+                        <div class="text-center mt-3">
+                            <img style="width: 100%;" src="' . $link . '" alt="">
+                        </div>';
                         echo json_encode([2, $result, $result, $html]);
                         exit();
                     }
@@ -474,6 +489,7 @@ class principalmodel extends Model
     function Validar_Cedula($param)
     {
         try {
+            $link = constant("URL") . "/public/img/SV24 - Mensajes LC_Proceso.png";
 
             $VAL_CONSULTA = $this->Validar_Cedula_Ya_Consulto($param);
             // echo json_encode([$VAL_CONSULTA]);
@@ -540,7 +556,6 @@ class principalmodel extends Model
                                 $query_cant_con->bindParam(":numero", $celular, PDO::PARAM_STR);
                                 $query_cant_con->execute();
 
-                                $link = constant("URL") . "/public/img/SV24 - Mensajes LC_Proceso.png";
 
                                 if ($DATOS_CREDITO[0]["Aprobado"] == 1) {
                                     $html = '
@@ -566,10 +581,52 @@ class principalmodel extends Model
                             echo json_encode([0, "No se pudo realizar la verificacion", "Intentelo de nuevo", "error"]);
                             exit();
                         }
-                    } else {
+                    } else if ($VAL_CEDULA[0] == 0) {
                         $this->ELiminar_Cedulas_No_existen($param);
                         echo json_encode([0, "No se pudo realizar la verificacion", "Asegureseo que la cédula ingresada sea la correcta", "error", $VAL_CEDULA]);
                         exit();
+                    } else {
+
+                        $cedula = trim($param["cedula"]);
+                        $email = trim($param["email"]);
+                        $celular = base64_decode(trim($param["celular"]));
+                        $ip = $this->getRealIP();
+                        $dispositivo = $_SERVER['HTTP_USER_AGENT'];
+
+                        $query = $this->db->connect_dobra()->prepare('UPDATE creditos_solicitados
+                        SET
+                            numero = :numero, 
+                            correo = :correo,
+                            ip = :ip,
+                            dispositivo = :dispositivo,
+                            estado = 2
+                        WHERE cedula = :cedula
+                        ');
+                        $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
+                        $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+                        $query->bindParam(":correo", $email, PDO::PARAM_STR);
+                        $query->bindParam(":ip", $ip, PDO::PARAM_STR);
+                        $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+                        if ($query->execute()) {
+
+                            $query_cant_con = $this->db->connect_dobra()->prepare("INSERT INTO cantidad_consultas
+                            (
+                                numero,
+                                cantidad
+                            )VALUES
+                            (
+                                :numero,
+                                1
+                            )");
+                            $query_cant_con->bindParam(":numero", $celular, PDO::PARAM_STR);
+                            $query_cant_con->execute();
+                            $html = '
+                                <div class="text-center mt-3">
+                                    <img style="width: 100%;" src="' . $link . '" alt="">
+                                </div>';
+                            echo json_encode([1, [], [], $html]);
+                            exit();
+                        }
                     }
                 }
             } else {
@@ -664,21 +721,43 @@ class principalmodel extends Model
     function consulta_api_cedula($cedula_encr)
     {
         // $cedula_encr = "yt3TIGS4cvQQt3+q6iQ2InVubHr4hm4V7cxn1V3jFC0=";
-        $url = 'https://apidatoscedula20240216081841.azurewebsites.net/api/GetData?code=FXs4nBycLJmBacJWuk_olF_7thXybtYRFDDyaRGKbnphAzFuQulUlA==&id=' . $cedula_encr . '&emp=SALVACERO&subp=DATOSCEDULA';
-        $response = file_get_contents($url);
-        if ($response === false) {
-            return 'Error al obtener la respuesta';
-        } else {
-            $data = json_decode($response);
-            if (isset($data->error)) {
-                return [0, $data->error, $cedula_encr];
-            } else {
-                if (count(($data->DATOS)) > 0) {
-                    return [1, $data->DATOS];
+        $old_error_reporting = error_reporting();
+        // Desactivar los mensajes de advertencia
+        error_reporting($old_error_reporting & ~E_WARNING);
+        // Realizar la solicitud
+        // Restaurar el nivel de informe de errores original
+
+        try {
+            $url = 'https://apidatoscedula20240216081841.azurewebsites.net/api/GetData?code=FXs4nBycLJmBacJWuk_olF_7thXybtYRFDDyaRGKbnphAzFuQulUlA==&id=' . $cedula_encr . '&emp=SALVACERO&subp=DATOSCEDULA';
+
+            try {
+                // Realizar la solicitud
+                $response = file_get_contents($url);
+                error_reporting($old_error_reporting);
+                if ($response === false) {
+                    // $data = json_decode($response);
+                    return [2, []];
                 } else {
-                    return [0, $data->DATOS];
+                    $data = json_decode($response);
+                    if (isset($data->error)) {
+                        return [0, $data->error, $cedula_encr];
+                    } else {
+                        if (count(($data->DATOS)) > 0) {
+                            return [1, $data->DATOS];
+                        } else {
+                            return [0, $data->DATOS];
+                        }
+                    }
                 }
+            } catch (Exception $e) {
+                // Capturar y manejar la excepción
+                echo json_encode([0, "ssssss"]);
+                exit();
             }
+        } catch (Exception $e) {
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
         }
     }
 
