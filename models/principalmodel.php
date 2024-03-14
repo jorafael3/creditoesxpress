@@ -1,6 +1,7 @@
 <?php
 
 // require_once "models/logmodel.php";
+require('public/fpdf/fpdf.php');
 
 class principalmodel extends Model
 {
@@ -253,7 +254,7 @@ class principalmodel extends Model
                     $query_cant_con->bindParam(":numero", $celular, PDO::PARAM_STR);
                     $query_cant_con->execute();
 
-                    if ($daysDifference >= 5) {
+                    if ($daysDifference >= 15) {
                         // $VAL_CEDULA = $this->Obtener_Datos_Cedula($parametro);
 
                         // if ($VAL_CEDULA[0] == 1) {
@@ -489,7 +490,9 @@ class principalmodel extends Model
     function Validar_Cedula($param)
     {
         try {
+            date_default_timezone_set('America/Guayaquil');
             $link = constant("URL") . "/public/img/SV24 - Mensajes LC_Proceso.png";
+            $RUTA_ARCHIVO = trim($param["cedula"]) . "_" . date("YmdHis") . ".pdf";
 
             $VAL_CONSULTA = $this->Validar_Cedula_Ya_Consulto($param);
             // echo json_encode([$VAL_CONSULTA]);
@@ -505,6 +508,7 @@ class principalmodel extends Model
                     // echo json_encode($VAL_CEDULA);
                     if ($VAL_CEDULA[0] == 1) {
                         $VAL_CREDITO = $this->Obtener_Datos_Credito($param);
+
                         if ($VAL_CREDITO[0] == 1) {
                             $DATOS_CEDULA = $VAL_CEDULA[1];
                             $DATOS_CREDITO = $VAL_CREDITO[1];
@@ -529,7 +533,8 @@ class principalmodel extends Model
                                     codigo_dactilar = :codigo_dactilar,
                                     credito_aprobado = :credito_aprobado,
                                     ip = :ip,
-                                    dispositivo = :dispositivo
+                                    dispositivo = :dispositivo,
+                                    ruta_archivo =:ruta_archivo
                                 WHERE cedula = :cedula
                                 ');
                             $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
@@ -541,6 +546,7 @@ class principalmodel extends Model
                             $query->bindParam(":credito_aprobado", $credito_aprobado, PDO::PARAM_STR);
                             $query->bindParam(":ip", $ip, PDO::PARAM_STR);
                             $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+                            $query->bindParam(":ruta_archivo", $RUTA_ARCHIVO, PDO::PARAM_STR);
 
                             if ($query->execute()) {
                                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -570,6 +576,7 @@ class principalmodel extends Model
                                         <h3></h3>
                                     </div>';
                                 }
+                                $this->Generar_Documento($RUTA_ARCHIVO, $nombre,$cedula);
                                 echo json_encode([1, $DATOS_CEDULA, $DATOS_CREDITO, $html]);
                                 exit();
                             } else {
@@ -624,6 +631,7 @@ class principalmodel extends Model
                                 <div class="text-center mt-3">
                                     <img style="width: 100%;" src="' . $link . '" alt="">
                                 </div>';
+                            // $this->Generar_Documento($RUTA_ARCHIVO);
                             echo json_encode([1, [], [], $html]);
                             exit();
                         }
@@ -728,7 +736,7 @@ class principalmodel extends Model
         // Restaurar el nivel de informe de errores original
 
         try {
-             $url = 'https://consultadatosapi.azurewebsites.net/api/GetDataBasica?code=Hp37f_WfqrsgpDyl8rP9zM1y-JRSJTMB0p8xjQDSEDszAzFu7yW3XA==&id=' . $cedula_encr . '&emp=SALVACERO&subp=DATOSCEDULA';
+            $url = 'https://consultadatosapi.azurewebsites.net/api/GetDataBasica?code=Hp37f_WfqrsgpDyl8rP9zM1y-JRSJTMB0p8xjQDSEDszAzFu7yW3XA==&id=' . $cedula_encr . '&emp=SALVACERO&subp=DATOSCEDULA';
             // $url = 'https://apidatoscedula20240216081841.azurewebsites.net/api/GetData?code=FXs4nBycLJmBacJWuk_olF_7thXybtYRFDDyaRGKbnphAzFuQulUlA==&id=' . $cedula_encr . '&emp=SALVACERO&subp=DATOSCEDULA';
             try {
                 // Realizar la solicitud
@@ -836,10 +844,51 @@ class principalmodel extends Model
         }
     }
 
+    function Generar_Documento($RUTA_ARCHIVO, $nombre, $cedula)
+    {
 
+        $pdf = new FPDF('P', 'mm', 'A4');
+        $pdf->AddPage();
 
+        // Título
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(0, 10, utf8_decode('Términos y Condiciones'), 0, 1, 'C');
+        $pdf->Ln(3);
 
+        // Contenido
+        $pdf->SetFont('Arial', '', 11);
+        $contenido = utf8_decode("Declaración de Capacidad legal y sobre la Aceptación:\n\nPor este medio, por mis propios y personales derechos de manera libre y voluntaria, declaro que soy mayor de edad, ecuatoriano o extranjero en residencia legal en el Ecuador y me encuentro en capacidad y habilidad legal para obligarme y suscribir todo tipo de acto jurídico según las normas del Código Civil y del Ordenamiento Jurídico Ecuatoriano, por lo cual, SALVACERO CIA. LTDA no tiene responsabilidad alguna sobre la condición jurídica previa o posterior del declarante, siendo responsabilidad exclusiva del usuario que autoriza La correcta utilización de los medios electrónicos utilizados para acceder a este canal digital y la conciencia de su habilidad o capacidad civil. En tal sentido, SALVACERO CIA. LTDA, una vez expuestos estos términos y condiciones, asume la aceptación como legítima.");
+        $pdf->MultiCell(0, 5, $contenido);
+        $pdf->Ln(3);
 
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(0, 10, 'Autorizaciones', 0, 1, 'L');
+        $pdf->Ln(3);
+
+        $pdf->SetFont('Arial', '', 11);
+        $autorizaciones = utf8_decode("1. Autorización de consulta y almacenamiento de información del Registro Civil y de datos biométricos:\n\nAutorizo de manera libre y voluntaria a SALVACERO CIA. LTDA a registrar y almacenar mis patrones biométricos para autenticación facial en este canal transaccional, para lo cual me comprometo a seguir los pasos para su registro previstos en el propio canal, así como, a cumplir las instrucciones que SALVACERO CIA. LTDA. determine, cuando necesite acceder y realizar transacciones en la plataforma. Además, declaro conocer con suficiencia en qué consiste esta modalidad de autenticación.\n\n2. Autorización de consulta de información de comportamiento crediticio:\n\nAutorizo de manera libre y voluntaria a SALVACERO CIA. LTDA y a quien sea el futuro cesionario, beneficiario o acreedor del crédito solicitado o del documento o título valor que lo respalde para que obtenga cuantas veces sean necesarias, de cualquier fuente de información, incluidos los burós de crédito, mi información de riesgos crediticios. De igual forma SALVACERO CIA. LTDA o quien sea el futuro cesionario, beneficiario o acreedor del crédito solicitado o del documento o título cambiario que lo respalde queda expresamente autorizado para que pueda transferir o entregar dicha información a los burós de crédito y/o a la Central de Riesgos si fuere pertinente. En este sentido declaro de manera libre y voluntaria que he sido informado previamente por SALVACERO CIA. LTDA. y/o sus comercios afiliados y que cuento con pleno conocimiento de:\n\n- La existencia de las bases de datos de información necesaria únicamente para la prestación del servicio de referencias crediticias; su contenido; su finalidad; y, sus potenciales destinatarios;\n- Las posibles consecuencias del uso de la información; y,\n- Los derechos que me asisten y las garantías relacionadas con ellos.\n\n3. Autorización para actividades de mercadeo:\n\nAutorizo de manera libre y voluntaria a SALVACERO CIA. LTDA a incorporar mis datos en bases de datos propias o de terceros para actividades de mercadeo directo. Conozco que he sido informado que, en caso de revocatoria de la presente autorización, deberé hacerlo de manera expresa a través de la página web de SALVACERO CIA. LTDA.");
+        $pdf->MultiCell(0, 5, $autorizaciones);
+        $pdf->Ln(3);
+        date_default_timezone_set('America/Guayaquil');
+        // Información del cliente
+        $pdf->SetFont('Arial', 'I', 11);
+        $nombreCliente = $nombre; // Aquí debes poner el nombre del cliente
+        $fechaConsulta = date("Y-m-d h:m"); // Fecha de la consulta
+        $direccionIP = $this->getRealIP(); // Dirección IP del cliente
+        $pdf->Cell(0, 8, 'CLIENTE: ' . $nombreCliente . " - " . $cedula, 0, 1, 'L');
+        $pdf->Cell(0, 8, utf8_decode('ACEPTÓ TERMINOS Y CONDICIONES: ') . $fechaConsulta, 0, 1, 'L');
+        $pdf->Cell(0, 8, utf8_decode('DIRECCIÓN IP: ') . $direccionIP, 0, 1, 'L');
+
+        
+        $nombreArchivo = $RUTA_ARCHIVO; // Nombre del archivo PDF
+        $rutaCarpeta = dirname(__DIR__) . '/recursos/docs/'; // Ruta de la carpeta donde se guardará el archivo (debes cambiar esto)
+
+        if (chmod($rutaCarpeta, 0777)) {
+            // echo "Permisos cambiados exitosamente.";
+        } 
+        
+        $pdf->Output($rutaCarpeta . $nombreArchivo, 'F');
+    }
 
 
 
