@@ -142,4 +142,13 @@ class Principal extends Controller
         // Comparar con el dígito verificador proporcionado
         return $digitoVerificador == $digitoEsperado;
     }
+
+    function Generar_pdf()
+    {
+
+        $array = json_decode(file_get_contents("php://input"), true);
+       
+        $Ventas =  $this->model->Generar_pdf($array);
+        // $this->CrecimientoCategoriasIndex();
+    }
 }
