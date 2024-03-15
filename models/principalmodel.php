@@ -266,6 +266,7 @@ class principalmodel extends Model
                             $nombre = $result[0]["nombre_cliente"];
                             $fecha_nacimiento = $result[0]["fecha_nacimiento"];
                             $codigo_dactilar = $result[0]["codigo_dactilar"];
+                            $localidad = $result[0]["localidad"];
                             $ip = $this->getRealIP();
                             $dispositivo = $_SERVER['HTTP_USER_AGENT'];
 
@@ -282,7 +283,8 @@ class principalmodel extends Model
                                         codigo_dactilar,
                                         credito_aprobado,
                                         ip,
-                                        dispositivo
+                                        dispositivo,
+                                        localidad
                                     ) 
                                     VALUES
                                     (
@@ -294,7 +296,8 @@ class principalmodel extends Model
                                         :codigo_dactilar, 
                                         :credito_aprobado,
                                         :ip,
-                                        :dispositivo
+                                        :dispositivo,
+                                        :localidad
                                     );
                                     ');
                             $query->bindParam(":cedula", $CEDULA, PDO::PARAM_STR);
@@ -306,6 +309,7 @@ class principalmodel extends Model
                             $query->bindParam(":credito_aprobado", $credito_aprobado, PDO::PARAM_STR);
                             $query->bindParam(":ip", $ip, PDO::PARAM_STR);
                             $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+                            $query->bindParam(":localidad", $localidad, PDO::PARAM_STR);
 
                             if ($query->execute()) {
                                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -534,7 +538,8 @@ class principalmodel extends Model
                                     credito_aprobado = :credito_aprobado,
                                     ip = :ip,
                                     dispositivo = :dispositivo,
-                                    ruta_archivo =:ruta_archivo
+                                    ruta_archivo =:ruta_archivo,
+                                    localidad =:localidad
                                 WHERE cedula = :cedula
                                 ');
                             $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
@@ -547,6 +552,7 @@ class principalmodel extends Model
                             $query->bindParam(":ip", $ip, PDO::PARAM_STR);
                             $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
                             $query->bindParam(":ruta_archivo", $RUTA_ARCHIVO, PDO::PARAM_STR);
+                            $query->bindParam(":localidad", $CANT_DOM, PDO::PARAM_STR);
 
                             if ($query->execute()) {
                                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
