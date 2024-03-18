@@ -144,7 +144,7 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
                 email: email
             }
             AjaxSendReceiveData(url_Validar_Cedula, param, function(x) {
-                console.log('x: ', x);
+                
                 
                 if (x[0] == 1) {
                     $("#SECC_CRE").empty();

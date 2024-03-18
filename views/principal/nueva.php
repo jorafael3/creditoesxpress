@@ -207,25 +207,46 @@ require 'views/header.php';
             <div class="modal-body">
 
                 <body>
-                    <h1>Términos y Condiciones</h1>
-                    <h2>Declaración de Capacidad legal y sobre la Aceptación</h2>
-                    <p>Por este medio, por mis propios y personales derechos de manera libre y voluntaria, declaro que soy mayor de edad, ecuatoriano o extranjero en residencia legal en el Ecuador y me encuentro en capacidad y habilidad legal para obligarme y suscribir todo tipo de acto jurídico según las normas del Código Civil y del Ordenamiento Jurídico Ecuatoriano, por lo cual, SALVACERO CIA. LTDA no tiene responsabilidad alguna sobre la condición jurídica previa o posterior del declarante, siendo responsabilidad exclusiva del usuario que autoriza la correcta utilización de los medios electrónicos utilizados para acceder a este canal digital y la conciencia de su habilidad o capacidad civil. En tal sentido, SALVACERO CIA. LTDA, una vez expuestos estos términos y condiciones, asume la aceptación como legítima.</p>
 
-                    <h2>Autorizaciones</h2>
+                    <h1>AUTORIZACIÓN PARA EL TRATAMIENTO DE DATOS PERSONALES</h1>
+                    <h2>SALVACERO CIA. LTDA.</h2>
 
-                    <h3>1. Autorización de consulta y almacenamiento de información del Registro Civil y de datos biométricos:</h3>
-                    <p>Autorizo de manera libre y voluntaria a SALVACERO CIA. LTDA a registrar y almacenar mis patrones biométricos para autenticación facial en este canal transaccional, para lo cual me comprometo a seguir los pasos para su registro previstos en el propio canal, así como, a cumplir las instrucciones que SALVACERO CIA. LTDA. determine, cuando necesite acceder y realizar transacciones en la plataforma. Además, declaro conocer con suficiencia en qué consiste esta modalidad de autenticación.</p>
+                    <p>Por medio de la presente autorizo de manera libre, voluntaria, previa, informada e inequívoca a SALVACERO CIA. LTDA.
+                        para que en los términos legalmente establecidos realice el tratamiento de mis datos personales como parte de la relación
+                        precontractual, contractual y post contractual para:</p>
 
-                    <h3>2. Autorización de consulta de información de comportamiento crediticio:</h3>
-                    <p>Autorizo de manera libre y voluntaria a SALVACERO CIA. LTDA y a quien sea el futuro cesionario, beneficiario o acreedor del crédito solicitado o del documento o título valor que lo respalde para que obtenga cuantas veces sean necesarias, de cualquier fuente de información, incluidos los burós de crédito, mi información de riesgos crediticios. De igual forma SALVACERO CIA. LTDA o quien sea el futuro cesionario, beneficiario o acreedor del crédito solicitado o del documento o título cambiario que lo respalde queda expresamente autorizado para que pueda transferir o entregar dicha información a los burós de crédito y/o a la Central de Riesgos si fuere pertinente. En este sentido declaro de manera libre y voluntaria que he sido informado previamente por SALVACERO CIA. LTDA. y/o sus comercios afiliados y que cuento con pleno conocimiento de:</p>
-                    <ol>
-                        <li>La existencia de las bases de datos de información necesaria únicamente para la prestación del servicio de referencias crediticias; su contenido; su finalidad; y, sus potenciales destinatarios;</li>
-                        <li>Las posibles consecuencias del uso de la información; y,</li>
-                        <li>Los derechos que me asisten y las garantías relacionadas con ellos.</li>
-                    </ol>
+                    <ul>
+                        <li>El procesamiento, análisis, investigación, estadísticas, referencias y demás trámites para facilitar, promover, permitir o mantener las relaciones con SALVACERO CIA. LTDA.</li>
+                        <li>Cuantas veces sean necesarias, gestione, obtenga y valide de cualquier entidad pública y/o privada que se encuentre facultada en el país, de forma expresa a la Dirección General de Registro Civil, Identificación y Cedulación, a la Dirección Nacional de Registros Públicos, al Servicio de Referencias Crediticias, a los burós de información crediticia, instituciones financieras de crédito, de cobranza, compañías emisoras o administradoras de tarjetas de crédito, personas naturales y los establecimientos de comercio, personas señaladas como referencias, empleador o cualquier otra entidad y demás fuentes legales de información autorizadas para operar en el país, información y/o documentación relacionada con mi perfil, capacidad de pago y/o cumplimiento de obligaciones, para validar los datos que he proporcionado, y luego de mi aceptación sean registrados para el desarrollo legítimo de la relación jurídica o comercial, así como para realizar actividades de tratamiento sobre mi comportamiento crediticio, manejo y movimiento de cuentas bancarias, tarjetas de crédito, activos, pasivos, datos/referencias personales y/o patrimoniales del pasado, del presente y las que se generen en el futuro, sea como deudor principal, codeudor o garante, y en general, sobre el cumplimiento de mis obligaciones. Faculto expresamente a SALVACERO CIA. LTDA. para transferir o entregar a las mismas personas o entidades, la información relacionada con mi comportamiento crediticio.</li>
+                        <li>Tratar, transferir y/o entregar la información que se obtenga en virtud de esta solicitud incluida la relacionada con mi comportamiento crediticio y la que se genere durante la relación jurídica y/o comercial a autoridades competentes, terceros, socios comerciales y/o adquirientes de cartera, para el tratamiento de mis datos personales conforme los fines detallados en esta autorización o que me contacten por cualquier medio para ofrecerme los distintos servicios y productos que integran su portafolio y su gestión, relacionados o no con los servicios financieros. En caso de que el SALVACERO CIA. LTDA. ceda o transfiera cartera adeudada por mí, el cesionario o adquiriente de dicha cartera queda desde ahora expresamente facultado para realizar las mismas actividades establecidas en esta autorización.</li>
+                        <li>Fines informativos, marketing, publicitarios y comerciales a través del servicio de telefonía, correo electrónico, mensajería SMS, WhatsApp, redes sociales y/o cualquier otro medio de comunicación electrónica.</li>
+                    </ul>
 
-                    <h3>3. Autorización para actividades de mercadeo:</h3>
-                    <p>Autorizo de manera libre y voluntaria a SALVACERO CIA. LTDA a incorporar mis datos en bases de datos propias o de terceros para actividades de mercadeo directo. Conozco que he sido informado que, en caso de revocatoria de la presente autorización, deberé hacerlo de manera expresa a través de la página web de SALVACERO CIA. LTDA.</p>
+                    <p>Entiendo y acepto que mi información personal podrá ser almacenada de manera digital, y accederán a ella los funcionarios de SALVACERO CIA. LTDA., estando obligados a cumplir con la legislación aplicable a las políticas de confidencialidad, protección de datos y sigilo bancario. En caso de que exista una negativa u oposición para el tratamiento de estos datos, no podré disfrutar de los servicios o funcionalidades que SALVACERO CIA. LTDA. ofrece y no podrá suministrarme productos, ni proveerme sus servicios o contactarme y en general cumplir con varias de las finalidades descritas en la Política.</p>
+
+                    <p>SALVACERO CIA. LTDA. conservará la información personal al menos durante el tiempo que dure la relación comercial y el que sea necesario para cumplir con la normativa respectiva del sector relativa a la conservación de archivos.</p>
+
+                    <p>Declaro conocer que para el desarrollo de los propósitos previstos en el presente documento y para fines precontractuales, contractuales y post contractuales es indispensable el tratamiento de mis datos personales conforme a la Política disponible en la página web de SALVACERO CIA. LTDA.</p>
+
+                    <p>Asimismo, declaro haber sido informado por el SALVACERO CIA. LTDA. de los derechos con que cuento para conocer, actualizar y rectificar mi información personal; así como, si no deseo continuar recibiendo información comercial y/o publicidad, deberé remitir mi requerimiento a través del proceso de atención de derechos ARSO+ en cualquier momento y sin costo alguno, utilizando la página web <a href="https://www.salvacero.com/terminos">https://www.salvacero.com/terminos</a> o comunicado escrito a Srs. Salvacero y enviando un correo electrónico a la dirección <a href="mailto:marketing@salvacero.com">marketing@salvacero.com</a></p>
+
+                    <p>En virtud de que, para ciertos productos y servicios SALVACERO CIA. LTDA. requiere o solicita el tratamiento de datos personales de un tercero que como cliente podré facilitar, como por ejemplo referencias comerciales o de contacto, garantizo que, si proporciono datos personales de terceras personas, les he solicitado su aceptación e informado acerca de las finalidades y la forma en la que SALVACERO CIA. LTDA. necesita tratar sus datos personales.</p>
+
+                    <p>Para la comunicación de sus datos personales se tomarán las medidas de seguridad adecuadas conforme la normativa vigente.</p>
+
+                    <h2>AUTORIZACIÓN EXPLÍCITA DE TRATAMIENTO DE DATOS PERSONALES</h2>
+                    <h2>SALVACERO CIA. LTDA.</h2>
+
+                    <p>Declaro que soy el titular de la información reportada, y que la he suministrado de forma voluntaria, completa, confiable, veraz, exacta y verídica:</p>
+
+                    <p>Como titular de los datos personales, particularmente el código dactilar, no me encuentro obligado a otorgar mi autorización de tratamiento a menos que requiera consultar y/o aplicar a un producto y/o servicio financiero. A través de la siguiente autorización libre, especifica, previa, informada, inequívoca y explícita, faculto al tratamiento (recopilación, acceso, consulta, registro, almacenamiento, procesamiento, análisis, elaboración de perfiles, comunicación o transferencia y eliminación) de mis datos personales incluido el código dactilar con la finalidad de: consultar y/o aplicar a un producto y/o servicio financiero y ser sujeto de decisiones basadas única o parcialmente en valoraciones que sean producto de procesos automatizados, incluida la elaboración de perfiles. Esta información será conservada por el plazo estipulado en la normativa aplicable.</p>
+
+                    <p>Así mismo, declaro haber sido informado por SALVACERO CIA. LTDA. de los derechos con que cuento para conocer, actualizar y rectificar mi información personal, así como, los establecidos en el artículo 20 de la LOPDP y remitir mi requerimiento a través del proceso de atención de derechos ARSO+; en cualquier momento y sin costo alguno, utilizando la página web <a href="https://www.salvacero.com/terminos">https://www.salvacero.com/terminos</a>, comunicado escrito o en cualquiera de las agencias de SALVACERO CIA. LTDA.</p>
+
+                    <p>Para proteger esta información tenemos medidas técnicas y organizativas de seguridad adaptadas a los riesgos como, por ejemplo: anonimización, cifrado, enmascarado y seudonimización.</p>
+
+                    <p>Con la lectura de este documento manifiesto que he sido informado sobre el Tratamiento de mis Datos Personales, y otorgo mi autorización y aceptación de forma voluntaria y verídica, tanto para la SALVACERO CIA. LTDA. y para cualquier cesionario o endosatario, especialmente Banco Solidario S.A. En señal de aceptación suscribo el presente documento.</p>
+
                 </body>
             </div>
             <div class="modal-footer">
