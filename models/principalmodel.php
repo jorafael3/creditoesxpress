@@ -15,90 +15,91 @@ class principalmodel extends Model
 
     function Validar_Celular($param)
     {
-        try {
-            $celular = trim($param["celular"]);
-            $terminos = $param["terminos"];
-            $ip = $this->getRealIP();
-            $dispositivo = $_SERVER['HTTP_USER_AGENT'];
+        $this->Obtener_Datos_Credito($param);
+        // try {
+        //     $celular = trim($param["celular"]);
+        //     $terminos = $param["terminos"];
+        //     $ip = $this->getRealIP();
+        //     $dispositivo = $_SERVER['HTTP_USER_AGENT'];
 
-            $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
-            // $SI_CONSULTO = 1;
+        //     $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
+        //     // $SI_CONSULTO = 1;
 
-            if ($SI_CONSULTO == 1) {
-                $this->Anular_Codigos($param);
-                $codigo = $this->Api_Sms($celular);
-                if ($codigo[0] == 1) {
-                    $query = $this->db->connect_dobra()->prepare('INSERT INTO solo_telefonos 
-                        (
-                            numero, 
-                            codigo, 
-                            terminos, 
-                            ip, 
-                            dispositivo
-                        ) 
-                        VALUES
-                        (
-                            :numero, 
-                            :codigo, 
-                            :terminos,
-                            :ip, 
-                            :dispositivo 
-                        );
-                    ');
-                    $query->bindParam(":numero", $celular, PDO::PARAM_STR);
-                    $query->bindParam(":codigo", $codigo[1], PDO::PARAM_STR);
-                    $query->bindParam(":terminos", $terminos, PDO::PARAM_STR);
-                    $query->bindParam(":ip", $ip, PDO::PARAM_STR);
-                    $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+        //     if ($SI_CONSULTO == 1) {
+        //         $this->Anular_Codigos($param);
+        //         $codigo = $this->Api_Sms($celular);
+        //         if ($codigo[0] == 1) {
+        //             $query = $this->db->connect_dobra()->prepare('INSERT INTO solo_telefonos 
+        //                 (
+        //                     numero, 
+        //                     codigo, 
+        //                     terminos, 
+        //                     ip, 
+        //                     dispositivo
+        //                 ) 
+        //                 VALUES
+        //                 (
+        //                     :numero, 
+        //                     :codigo, 
+        //                     :terminos,
+        //                     :ip, 
+        //                     :dispositivo 
+        //                 );
+        //             ');
+        //             $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+        //             $query->bindParam(":codigo", $codigo[1], PDO::PARAM_STR);
+        //             $query->bindParam(":terminos", $terminos, PDO::PARAM_STR);
+        //             $query->bindParam(":ip", $ip, PDO::PARAM_STR);
+        //             $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
 
-                    if ($query->execute()) {
-                        $result = $query->fetchAll(PDO::FETCH_ASSOC);
-                        $cel = base64_encode($celular);
-                        $codigo_temporal = "0000";
-                        // $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
-                        $html = '
-                            <div class="fv-row mb-10 text-center">
-                                <label class="form-label fw-bold fs-2">Ingresa el código enviado a tu celular</label><br>
-                                <label class="text-muted fw-bold fs-6">Verifica el número celular</label>
-                                <input type="hidden" id="CEL_1" value="' . $cel . '">
-                                <input type="hidden" id="CEL_1" value="' . $codigo_temporal . '">
-                            </div>
-                            <div class="row justify-content-center mb-5">
-                                        <div class="col-md-12">
-                                            <div class="row justify-content-center">
-                                                <div class="col-auto">
-                                                    <input type="text" maxlength="1" class="form-control code-input" />
-                                                </div>
-                                                <div class="col-auto">
-                                                    <input type="text" maxlength="1" class="form-control code-input" />
-                                                </div>
-                                                <div class="col-auto">
-                                                    <input type="text" maxlength="1" class="form-control code-input" />
-                                                </div>
-                                                <div class="col-auto">
-                                                    <input type="text" maxlength="1" class="form-control code-input" />
-                                                </div>
-                                            </div>
-                                        </div>
-                            </div>';
-                        echo json_encode([1, $celular, $html]);
-                        exit();
-                    } else {
-                        $err = $query->errorInfo();
-                        echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
-                        exit();
-                    }
-                }
-            } else {
-                echo json_encode([0, "Error al generar código, por favor intentelo en un momento", "error"]);
-                exit();
-            }
-        } catch (PDOException $e) {
+        //             if ($query->execute()) {
+        //                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        //                 $cel = base64_encode($celular);
+        //                 $codigo_temporal = "0000";
+        //                 // $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
+        //                 $html = '
+        //                     <div class="fv-row mb-10 text-center">
+        //                         <label class="form-label fw-bold fs-2">Ingresa el código enviado a tu celular</label><br>
+        //                         <label class="text-muted fw-bold fs-6">Verifica el número celular</label>
+        //                         <input type="hidden" id="CEL_1" value="' . $cel . '">
+        //                         <input type="hidden" id="CEL_1" value="' . $codigo_temporal . '">
+        //                     </div>
+        //                     <div class="row justify-content-center mb-5">
+        //                                 <div class="col-md-12">
+        //                                     <div class="row justify-content-center">
+        //                                         <div class="col-auto">
+        //                                             <input type="text" maxlength="1" class="form-control code-input" />
+        //                                         </div>
+        //                                         <div class="col-auto">
+        //                                             <input type="text" maxlength="1" class="form-control code-input" />
+        //                                         </div>
+        //                                         <div class="col-auto">
+        //                                             <input type="text" maxlength="1" class="form-control code-input" />
+        //                                         </div>
+        //                                         <div class="col-auto">
+        //                                             <input type="text" maxlength="1" class="form-control code-input" />
+        //                                         </div>
+        //                                     </div>
+        //                                 </div>
+        //                     </div>';
+        //                 echo json_encode([1, $celular, $html]);
+        //                 exit();
+        //             } else {
+        //                 $err = $query->errorInfo();
+        //                 echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
+        //                 exit();
+        //             }
+        //         }
+        //     } else {
+        //         echo json_encode([0, "Error al generar código, por favor intentelo en un momento", "error"]);
+        //         exit();
+        //     }
+        // } catch (PDOException $e) {
 
-            $e = $e->getMessage();
-            echo json_encode($e);
-            exit();
-        }
+        //     $e = $e->getMessage();
+        //     echo json_encode($e);
+        //     exit();
+        // }
     }
 
     function Api_Sms($celular)
@@ -817,15 +818,107 @@ class principalmodel extends Model
         }
     }
 
+
+    function encryptCedula($cedula)
+    {
+        // Contenido de la clave pública
+        $public_key_file = "C:/xampp/htdocs/creditoexpress/models/PBKey.txt";
+
+        // Lee el contenido del archivo PEM
+        $public_key_content = file_get_contents($public_key_file);
+
+        // Elimina espacios en blanco adicionales alrededor del contenido
+        $public_key_content = trim($public_key_content);
+
+        $rsaKey = openssl_pkey_get_public($public_key_content);
+        if (!$rsaKey) {
+            // Manejar el error de obtener la clave pública
+            return openssl_error_string();
+        }
+
+        // // Divide el texto en bloques para encriptar
+        $encryptedData = '';
+        $encryptionSuccess = openssl_public_encrypt($cedula, $encryptedData, $rsaKey);
+
+        // Obtener detalles del error, si hubo alguno
+        // $error = openssl_error_string();
+        // if ($error) {
+        //     // Manejar el error de OpenSSL
+        //     return $error;
+        // }
+
+        // Liberar la clave pública RSA de la memoria
+        openssl_free_key($rsaKey);
+
+        if ($encryptionSuccess === false) {
+            // Manejar el error de encriptación
+            return null;
+        }
+
+        // Devolver la cédula encriptada
+        return base64_encode($encryptedData);
+        // echo json_encode(base64_encode($encryptedData));
+        // exit();
+        // return ($encrypted);
+    }
+
     function Obtener_Datos_Credito($param)
     {
-        $cedula = trim($param["cedula"]);
-        $ARRAY = [array(
-            "Aprobado" => 1,
-            "motivo" => "Cumple los requisitos",
-        )];
-        return [1, $ARRAY];
+        // $old_error_reporting = error_reporting();
+        // Desactivar los mensajes de advertencia
+        // error_reporting($old_error_reporting & ~E_WARNING);
+        $cedula = "0931531115";
+        $cedula_ECrip = $this->encryptCedula($cedula);
+        $nacimiento = '19940412';
+        $data = array(
+            "transaccion" => 4001,
+            "idSession" => "1",
+            "secuencial" => "035",
+            "mensaje" => array(
+                "IdCasaComercialProducto" => 8,
+                "TipoIdentificacion" => "CED",
+                "IdentificacionCliente" => $cedula_ECrip, // Encriptar la cédula
+                "FechaNacimiento" => $nacimiento,
+                "ValorIngreso" => "900",
+                "Instruccion" => "SECU",
+                "Celular" => '0969786231'
+            )
+        );
+        // Convertir datos a JSON
+        $data_string = json_encode($data);
+        // URL del API
+        $url = 'https://bs-autentica.com/cco/apiofertaccoqa1/api/CasasComerciales/GenerarCalificacionEnPuntaCasasComerciales';
+        // API Key
+        $api_key = '0G4uZTt8yVlhd33qfCn5sazR5rDgolqH64kUYiVM5rcuQbOFhQEADhMRHqumswphGtHt1yhptsg0zyxWibbYmjJOOTstDwBfPjkeuh6RITv32fnY8UxhU9j5tiXFrgVz';
+        // Inicializa la sesión cURL
+        $ch = curl_init($url);
+        // Configura las opciones de la solicitud
+        $verbose = fopen('php://temp', 'w+');
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data_string),
+            'ApiKeySuscripcion: ' . $api_key
+        ));
+        // Ejecuta la solicitud y obtiene la respuesta
+        $response = (curl_exec($ch));
+        // Cierra la sesión cURL
+        $error = (curl_error($ch));
+        curl_close($ch);
+        // Imprime la respuesta
+        // echo $response;
+        // return [1, $ARRAY];
+        rewind($verbose);
+        $verboseLog = stream_get_contents($verbose);
+        echo ($response);
+        exit();
     }
+
+
 
     function ELiminar_Cedulas_No_existen($param)
     {
