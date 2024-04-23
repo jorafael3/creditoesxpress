@@ -867,19 +867,24 @@ class principalmodel extends Model
         // $old_error_reporting = error_reporting();
         // Desactivar los mensajes de advertencia
         // error_reporting($old_error_reporting & ~E_WARNING);
-        $cedula = "0931531115";
+        $cedula = "0930254909";
         $cedula_ECrip = $this->encryptCedula($cedula);
-        $nacimiento = '19940412';
+        $nacimiento = '19920530';
+        $SEC = $this->Get_Secuencial_Api_Banco();
+        $SEC = intval($SEC[0]["valor"]) + 1;
+
+        
+
         $data = array(
             "transaccion" => 4001,
             "idSession" => "1",
-            "secuencial" => "035",
+            "secuencial" => $SEC,
             "mensaje" => array(
                 "IdCasaComercialProducto" => 8,
                 "TipoIdentificacion" => "CED",
                 "IdentificacionCliente" => $cedula_ECrip, // Encriptar la cédula
                 "FechaNacimiento" => $nacimiento,
-                "ValorIngreso" => "900",
+                "ValorIngreso" => "1500",
                 "Instruccion" => "SECU",
                 "Celular" => '0969786231'
             )
@@ -916,6 +921,24 @@ class principalmodel extends Model
         $verboseLog = stream_get_contents($verbose);
         echo ($response);
         exit();
+    }
+
+    function Get_Secuencial_Api_Banco()
+    {
+        try {
+            // sleep(4);
+            // $cedula = trim($param["cedula"]);
+            $arr = "";
+            $query = $this->db->connect_dobra()->prepare("SELECT * FROM parametros where id = 1");
+            // $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
+            if ($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return $result;
+            }
+        } catch (PDOException $e) {
+            $e = $e->getMessage();
+            return [0, "INTENTE DE NUEVO"];
+        }
     }
 
 
@@ -1234,13 +1257,6 @@ class principalmodel extends Model
             exit();
         }
     }
-
-
-
-
-
-
-
 
 
 
