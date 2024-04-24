@@ -15,91 +15,91 @@ class principalmodel extends Model
 
     function Validar_Celular($param)
     {
-        $this->Obtener_Datos_Credito($param);
-        // try {
-        //     $celular = trim($param["celular"]);
-        //     $terminos = $param["terminos"];
-        //     $ip = $this->getRealIP();
-        //     $dispositivo = $_SERVER['HTTP_USER_AGENT'];
+        // $this->Obtener_Datos_Credito($param);
+        try {
+            $celular = trim($param["celular"]);
+            $terminos = $param["terminos"];
+            $ip = $this->getRealIP();
+            $dispositivo = $_SERVER['HTTP_USER_AGENT'];
 
-        //     $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
-        //     // $SI_CONSULTO = 1;
+            $SI_CONSULTO = $this->Validar_si_consulto_credito($param);
+            // $SI_CONSULTO = 1;
 
-        //     if ($SI_CONSULTO == 1) {
-        //         $this->Anular_Codigos($param);
-        //         $codigo = $this->Api_Sms($celular);
-        //         if ($codigo[0] == 1) {
-        //             $query = $this->db->connect_dobra()->prepare('INSERT INTO solo_telefonos 
-        //                 (
-        //                     numero, 
-        //                     codigo, 
-        //                     terminos, 
-        //                     ip, 
-        //                     dispositivo
-        //                 ) 
-        //                 VALUES
-        //                 (
-        //                     :numero, 
-        //                     :codigo, 
-        //                     :terminos,
-        //                     :ip, 
-        //                     :dispositivo 
-        //                 );
-        //             ');
-        //             $query->bindParam(":numero", $celular, PDO::PARAM_STR);
-        //             $query->bindParam(":codigo", $codigo[1], PDO::PARAM_STR);
-        //             $query->bindParam(":terminos", $terminos, PDO::PARAM_STR);
-        //             $query->bindParam(":ip", $ip, PDO::PARAM_STR);
-        //             $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+            if ($SI_CONSULTO == 1) {
+                $this->Anular_Codigos($param);
+                $codigo = $this->Api_Sms($celular);
+                if ($codigo[0] == 1) {
+                    $query = $this->db->connect_dobra()->prepare('INSERT INTO solo_telefonos 
+                        (
+                            numero, 
+                            codigo, 
+                            terminos, 
+                            ip, 
+                            dispositivo
+                        ) 
+                        VALUES
+                        (
+                            :numero, 
+                            :codigo, 
+                            :terminos,
+                            :ip, 
+                            :dispositivo 
+                        );
+                    ');
+                    $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+                    $query->bindParam(":codigo", $codigo[1], PDO::PARAM_STR);
+                    $query->bindParam(":terminos", $terminos, PDO::PARAM_STR);
+                    $query->bindParam(":ip", $ip, PDO::PARAM_STR);
+                    $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
 
-        //             if ($query->execute()) {
-        //                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
-        //                 $cel = base64_encode($celular);
-        //                 $codigo_temporal = "0000";
-        //                 // $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
-        //                 $html = '
-        //                     <div class="fv-row mb-10 text-center">
-        //                         <label class="form-label fw-bold fs-2">Ingresa el código enviado a tu celular</label><br>
-        //                         <label class="text-muted fw-bold fs-6">Verifica el número celular</label>
-        //                         <input type="hidden" id="CEL_1" value="' . $cel . '">
-        //                         <input type="hidden" id="CEL_1" value="' . $codigo_temporal . '">
-        //                     </div>
-        //                     <div class="row justify-content-center mb-5">
-        //                                 <div class="col-md-12">
-        //                                     <div class="row justify-content-center">
-        //                                         <div class="col-auto">
-        //                                             <input type="text" maxlength="1" class="form-control code-input" />
-        //                                         </div>
-        //                                         <div class="col-auto">
-        //                                             <input type="text" maxlength="1" class="form-control code-input" />
-        //                                         </div>
-        //                                         <div class="col-auto">
-        //                                             <input type="text" maxlength="1" class="form-control code-input" />
-        //                                         </div>
-        //                                         <div class="col-auto">
-        //                                             <input type="text" maxlength="1" class="form-control code-input" />
-        //                                         </div>
-        //                                     </div>
-        //                                 </div>
-        //                     </div>';
-        //                 echo json_encode([1, $celular, $html]);
-        //                 exit();
-        //             } else {
-        //                 $err = $query->errorInfo();
-        //                 echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
-        //                 exit();
-        //             }
-        //         }
-        //     } else {
-        //         echo json_encode([0, "Error al generar código, por favor intentelo en un momento", "error"]);
-        //         exit();
-        //     }
-        // } catch (PDOException $e) {
+                    if ($query->execute()) {
+                        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                        $cel = base64_encode($celular);
+                        $codigo_temporal = "0000";
+                        // $codigo_temporal = $this->Cargar_Codigo_Temporal($param);
+                        $html = '
+                            <div class="fv-row mb-10 text-center">
+                                <label class="form-label fw-bold fs-2">Ingresa el código enviado a tu celular</label><br>
+                                <label class="text-muted fw-bold fs-6">Verifica el número celular</label>
+                                <input type="hidden" id="CEL_1" value="' . $cel . '">
+                                <input type="hidden" id="CEL_1" value="' . $codigo_temporal . '">
+                            </div>
+                            <div class="row justify-content-center mb-5">
+                                        <div class="col-md-12">
+                                            <div class="row justify-content-center">
+                                                <div class="col-auto">
+                                                    <input type="text" maxlength="1" class="form-control code-input" />
+                                                </div>
+                                                <div class="col-auto">
+                                                    <input type="text" maxlength="1" class="form-control code-input" />
+                                                </div>
+                                                <div class="col-auto">
+                                                    <input type="text" maxlength="1" class="form-control code-input" />
+                                                </div>
+                                                <div class="col-auto">
+                                                    <input type="text" maxlength="1" class="form-control code-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                            </div>';
+                        echo json_encode([1, $celular, $html]);
+                        exit();
+                    } else {
+                        $err = $query->errorInfo();
+                        echo json_encode([0, "Error al generar solicitud, intentelo de nuevo", "error", $err]);
+                        exit();
+                    }
+                }
+            } else {
+                echo json_encode([0, "Error al generar código, por favor intentelo en un momento", "error"]);
+                exit();
+            }
+        } catch (PDOException $e) {
 
-        //     $e = $e->getMessage();
-        //     echo json_encode($e);
-        //     exit();
-        // }
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
+        }
     }
 
     function Api_Sms($celular)
@@ -503,18 +503,23 @@ class principalmodel extends Model
             // echo json_encode([$VAL_CONSULTA]);
             // exit();
             if ($VAL_CONSULTA[0] == 1) {
+                //* INSERTA SOLO CEDULA EN TABLA
                 $VAL_CEDULA_ = $this->Validar_si_cedula_existe($param);
-                // echo json_encode([$param]);
+                // echo json_encode($VAL_CEDULA_);
                 // exit();
                 if ($VAL_CEDULA_ == 0) {
                 } else {
                     // $VAL_CEDULA = $this->consulta_api_cedula();
                     $VAL_CEDULA = $this->Obtener_Datos_Cedula($param);
                     // echo json_encode($VAL_CEDULA);
+                    // exit();
                     if ($VAL_CEDULA[0] == 1) {
-                        $VAL_CREDITO = $this->Obtener_Datos_Credito($param);
-
+                        $VAL_CREDITO = $this->Obtener_Datos_Credito($VAL_CEDULA[1][0], $param);
+                        // echo json_encode([$VAL_CREDITO, $VAL_CEDULA]);
+                        // exit();
                         if ($VAL_CREDITO[0] == 1) {
+
+
                             $DATOS_CEDULA = $VAL_CEDULA[1];
                             $DATOS_CREDITO = $VAL_CREDITO[1];
                             $cedula = trim($param["cedula"]);
@@ -527,7 +532,25 @@ class principalmodel extends Model
                             $CANT_DOM = $DATOS_CEDULA[0]->CANT_DOM;
                             $ip = $this->getRealIP();
                             $dispositivo = $_SERVER['HTTP_USER_AGENT'];
-                            $credito_aprobado = $DATOS_CREDITO[0]["Aprobado"];
+
+                            $credito_aprobado = floatval($DATOS_CREDITO["mensaje"]["montoMaximo"]) > 0 ? 1 : 0;
+                            $credito_aprobado_texto = floatval($DATOS_CREDITO["mensaje"]["montoMaximo"]) > 0 ? "APROBADO" : "RECHAZADO";
+
+                            $API_SOL_descripcion = $DATOS_CREDITO["descripcion"];
+                            $API_SOL_campania = $DATOS_CREDITO["mensaje"]["campania"];
+                            $API_SOL_identificacion = $DATOS_CREDITO["mensaje"]["identificacion"];
+                            $API_SOL_lote = $DATOS_CREDITO["mensaje"]["lote"];
+                            $API_SOL_montoMaximo = $DATOS_CREDITO["mensaje"]["montoMaximo"];
+                            $API_SOL_nombreCampania = $DATOS_CREDITO["mensaje"]["nombreCampania"];
+                            $API_SOL_plazoMaximo = $DATOS_CREDITO["mensaje"]["plazoMaximo"];
+                            $API_SOL_promocion = $DATOS_CREDITO["mensaje"]["promocion"];
+                            $API_SOL_segmentoRiesgo = $DATOS_CREDITO["mensaje"]["segmentoRiesgo"];
+                            $API_SOL_subLote = $DATOS_CREDITO["mensaje"]["subLote"];
+                            $API_SOL_idSesion = $DATOS_CREDITO["idSesion"];
+
+                            // echo json_encode($DATOS_CREDITO);
+                            // exit();
+
 
                             $query = $this->db->connect_dobra()->prepare('UPDATE creditos_solicitados
                                 SET
@@ -536,11 +559,26 @@ class principalmodel extends Model
                                     nombre_cliente = :nombre_cliente, 
                                     fecha_nacimiento = :fecha_nacimiento, 
                                     codigo_dactilar = :codigo_dactilar,
-                                    credito_aprobado = :credito_aprobado,
                                     ip = :ip,
                                     dispositivo = :dispositivo,
                                     ruta_archivo =:ruta_archivo,
-                                    localidad =:localidad
+                                    localidad =:localidad,
+
+                                    API_SOL_descripcion =:API_SOL_descripcion,
+                                    API_SOL_campania =:API_SOL_campania,
+                                    API_SOL_identificacion =:API_SOL_identificacion,
+                                    API_SOL_lote =:API_SOL_lote,
+                                    API_SOL_montoMaximo =:API_SOL_montoMaximo,
+                                    API_SOL_nombreCampania =:API_SOL_nombreCampania,
+                                    API_SOL_plazoMaximo =:API_SOL_plazoMaximo,
+                                    API_SOL_promocion =:API_SOL_promocion,
+                                    API_SOL_segmentoRiesgo =:API_SOL_segmentoRiesgo,
+                                    API_SOL_subLote =:API_SOL_subLote,
+                                    API_SOL_idSesion =:API_SOL_idSesion,
+                                    credito_aprobado = :credito_aprobado,
+                                    credito_aprobado_texto = :credito_aprobado_texto
+
+
                                 WHERE cedula = :cedula
                                 ');
                             $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
@@ -549,12 +587,24 @@ class principalmodel extends Model
                             $query->bindParam(":nombre_cliente", $nombre, PDO::PARAM_STR);
                             $query->bindParam(":fecha_nacimiento", $fecha_nacimiento, PDO::PARAM_STR);
                             $query->bindParam(":codigo_dactilar", $codigo_dactilar, PDO::PARAM_STR);
-                            $query->bindParam(":credito_aprobado", $credito_aprobado, PDO::PARAM_STR);
                             $query->bindParam(":ip", $ip, PDO::PARAM_STR);
                             $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
                             $query->bindParam(":ruta_archivo", $RUTA_ARCHIVO, PDO::PARAM_STR);
                             $query->bindParam(":localidad", $CANT_DOM, PDO::PARAM_STR);
 
+                            $query->bindParam(":API_SOL_descripcion", $API_SOL_descripcion, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_campania", $API_SOL_campania, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_identificacion", $API_SOL_identificacion, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_lote", $API_SOL_lote, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_montoMaximo", $API_SOL_montoMaximo, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_nombreCampania", $API_SOL_nombreCampania, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_plazoMaximo", $API_SOL_plazoMaximo, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_promocion", $API_SOL_promocion, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_segmentoRiesgo", $API_SOL_segmentoRiesgo, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_subLote", $API_SOL_subLote, PDO::PARAM_STR);
+                            $query->bindParam(":API_SOL_idSesion", $API_SOL_idSesion, PDO::PARAM_STR);
+                            $query->bindParam(":credito_aprobado", $credito_aprobado, PDO::PARAM_STR);
+                            $query->bindParam(":credito_aprobado_texto", $credito_aprobado_texto, PDO::PARAM_STR);
                             if ($query->execute()) {
                                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
                                 $query_cant_con = $this->db->connect_dobra()->prepare("INSERT INTO cantidad_consultas
@@ -570,7 +620,7 @@ class principalmodel extends Model
                                 $query_cant_con->execute();
 
 
-                                if ($DATOS_CREDITO[0]["Aprobado"] == 1) {
+                                if ($credito_aprobado == 1) {
                                     $html = '
                                     <div class="text-center mt-3">
                                         <img style="width: 100%;" src="' . $link . '" alt="">
@@ -583,7 +633,7 @@ class principalmodel extends Model
                                         <h3></h3>
                                     </div>';
                                 }
-                                $this->Generar_Documento($RUTA_ARCHIVO, $nombre, $cedula);
+                                // $this->Generar_Documento($RUTA_ARCHIVO, $nombre, $cedula);
                                 echo json_encode([1, $DATOS_CEDULA, $DATOS_CREDITO, $html]);
                                 exit();
                             } else {
@@ -592,7 +642,7 @@ class principalmodel extends Model
                                 exit();
                             }
                         } else {
-                            echo json_encode([0, "No se pudo realizar la verificacion", "Intentelo de nuevo", "error"]);
+                            echo json_encode([0, "No se pudo realizar la verificacion", "Intentelo de nuevo", $VAL_CREDITO]);
                             exit();
                         }
                     } else if ($VAL_CEDULA[0] == 0) {
@@ -645,12 +695,12 @@ class principalmodel extends Model
                     }
                 }
             } else {
-                echo json_encode([0, $VAL_CONSULTA[1], "Asegureseo que la cédula ingresada sea la correcta", "error"]);
+                echo json_encode([0, $VAL_CONSULTA[1], "Asegurese que la cédula ingresada sea la correcta", "error"]);
                 exit();
             }
         } catch (PDOException $e) {
             $e = $e->getMessage();
-            echo json_encode([0, "No se pudo realizar la verificacion", "Intentelo de nuevo", $e]);
+            echo json_encode([0, "No se pudo realizar la verificaciolln", "Intentelo de nuevo", $e]);
             exit();
         }
     }
@@ -672,7 +722,7 @@ class principalmodel extends Model
                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
                 if (count($result) > 0) {
                     if ($result[0]["numero"] != $celular) {
-                        return [0, "Esta cédula esta asociado a otro número queya realizo una consulta"];
+                        return [0, "Esta cédula esta asociado a otro número que ya realizo una consulta"];
                     } else {
                         return [1, ""];
                     }
@@ -794,7 +844,6 @@ class principalmodel extends Model
                     $result = $query->fetchAll(PDO::FETCH_ASSOC);
                     if (count($result) > 0) {
                         $encry = trim($result[0]["cedula_encr"]);
-
                         if ($encry != null) {
                             $en = $this->consulta_api_cedula($encry);
                             return $en;
@@ -817,7 +866,6 @@ class principalmodel extends Model
             return [0, "INTENTE DE NUEVO"];
         }
     }
-
 
     function encryptCedula($cedula)
     {
@@ -862,65 +910,85 @@ class principalmodel extends Model
         // return ($encrypted);
     }
 
-    function Obtener_Datos_Credito($param)
+    function Obtener_Datos_Credito($param, $param_DATOS)
     {
-        // $old_error_reporting = error_reporting();
-        // Desactivar los mensajes de advertencia
-        // error_reporting($old_error_reporting & ~E_WARNING);
-        $cedula = "0930254909";
-        $cedula_ECrip = $this->encryptCedula($cedula);
-        $nacimiento = '19920530';
-        $SEC = $this->Get_Secuencial_Api_Banco();
-        $SEC = intval($SEC[0]["valor"]) + 1;
+        try {
+            // $old_error_reporting = error_reporting();
+            // Desactivar los mensajes de advertencia
+            // error_reporting($old_error_reporting & ~E_WARNING);
+            $cedula = $param->CEDULA;
+            // $cedula = "0930254909";
+            $cedula_ECrip = $this->encryptCedula($cedula);
+            $nacimiento = $param->FECHA_NACIM;
+            $fecha = DateTime::createFromFormat('d/m/Y', $nacimiento);
+            $fecha_formateada = $fecha->format('Ymd');
+            $CELULAR = base64_decode($param_DATOS["celular"]);
+            $ingresos = "1500";
+            $Instruccion = "SECU";
 
-        
+            $SEC = $this->Get_Secuencial_Api_Banco();
+            $SEC = intval($SEC[0]["valor"]) + 1;
 
-        $data = array(
-            "transaccion" => 4001,
-            "idSession" => "1",
-            "secuencial" => $SEC,
-            "mensaje" => array(
-                "IdCasaComercialProducto" => 8,
-                "TipoIdentificacion" => "CED",
-                "IdentificacionCliente" => $cedula_ECrip, // Encriptar la cédula
-                "FechaNacimiento" => $nacimiento,
-                "ValorIngreso" => "1500",
-                "Instruccion" => "SECU",
-                "Celular" => '0969786231'
-            )
-        );
-        // Convertir datos a JSON
-        $data_string = json_encode($data);
-        // URL del API
-        $url = 'https://bs-autentica.com/cco/apiofertaccoqa1/api/CasasComerciales/GenerarCalificacionEnPuntaCasasComerciales';
-        // API Key
-        $api_key = '0G4uZTt8yVlhd33qfCn5sazR5rDgolqH64kUYiVM5rcuQbOFhQEADhMRHqumswphGtHt1yhptsg0zyxWibbYmjJOOTstDwBfPjkeuh6RITv32fnY8UxhU9j5tiXFrgVz';
-        // Inicializa la sesión cURL
-        $ch = curl_init($url);
-        // Configura las opciones de la solicitud
-        $verbose = fopen('php://temp', 'w+');
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($data_string),
-            'ApiKeySuscripcion: ' . $api_key
-        ));
-        // Ejecuta la solicitud y obtiene la respuesta
-        $response = (curl_exec($ch));
-        // Cierra la sesión cURL
-        $error = (curl_error($ch));
-        curl_close($ch);
-        // Imprime la respuesta
-        // echo $response;
-        // return [1, $ARRAY];
-        rewind($verbose);
-        $verboseLog = stream_get_contents($verbose);
-        echo ($response);
-        exit();
+
+
+            $data = array(
+                "transaccion" => 4001,
+                "idSession" => "1",
+                "secuencial" => $SEC,
+                "mensaje" => array(
+                    "IdCasaComercialProducto" => 8,
+                    "TipoIdentificacion" => "CED",
+                    "IdentificacionCliente" => $cedula_ECrip, // Encriptar la cédula
+                    "FechaNacimiento" => $fecha_formateada,
+                    "ValorIngreso" => $ingresos,
+                    "Instruccion" =>  $Instruccion,
+                    "Celular" =>  $CELULAR
+                )
+            );
+            // Convertir datos a JSON
+            $data_string = json_encode($data);
+            // URL del API
+            $url = 'https://bs-autentica.com/cco/apiofertaccoqa1/api/CasasComerciales/GenerarCalificacionEnPuntaCasasComerciales';
+            // API Key
+            $api_key = '0G4uZTt8yVlhd33qfCn5sazR5rDgolqH64kUYiVM5rcuQbOFhQEADhMRHqumswphGtHt1yhptsg0zyxWibbYmjJOOTstDwBfPjkeuh6RITv32fnY8UxhU9j5tiXFrgVz';
+            // Inicializa la sesión cURL
+            $ch = curl_init($url);
+            // Configura las opciones de la solicitud
+            $verbose = fopen('php://temp', 'w+');
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data_string),
+                'ApiKeySuscripcion: ' . $api_key
+            ));
+            // Ejecuta la solicitud y obtiene la respuesta
+            $response = (curl_exec($ch));
+            // Cierra la sesión cURL
+            $error = (curl_error($ch));
+            curl_close($ch);
+            // Imprime la respuesta
+            // echo $response;
+            // return [1, $ARRAY];
+            rewind($verbose);
+            $verboseLog = stream_get_contents($verbose);
+            $response_array = json_decode($response, true);
+
+            $this->Update_Secuencial_Api_Banco($SEC);
+            // Verificar si hay un error en la respuesta
+            if (isset($response_array['esError']) && $response_array['esError']) {
+                return [0, $response_array, $data];
+            } else {
+                return [1, $response_array, $data];
+            }
+        } catch (Exception $e) {
+            // Captura la excepción y maneja el error
+            // echo "Error: " . $e->getMessage();
+            return [0, "Error al procesar la solictud banco", $e->getMessage()];
+        }
     }
 
     function Get_Secuencial_Api_Banco()
@@ -941,7 +1009,25 @@ class principalmodel extends Model
         }
     }
 
-
+    function Update_Secuencial_Api_Banco($SEC)
+    {
+        try {
+            // sleep(4);
+            // $cedula = trim($param["cedula"]);
+            $arr = "";
+            $query = $this->db->connect_dobra()->prepare("UPDATE parametros 
+                SET valor = :valor
+            where id = 1");
+            $query->bindParam(":valor", $SEC, PDO::PARAM_STR);
+            if ($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return $result;
+            }
+        } catch (PDOException $e) {
+            $e = $e->getMessage();
+            return [0, "INTENTE DE NUEVO"];
+        }
+    }
 
     function ELiminar_Cedulas_No_existen($param)
     {
