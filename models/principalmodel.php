@@ -641,7 +641,8 @@ class principalmodel extends Model
                                 echo json_encode([0, "error al verificar información", "Intentelo de nuevo", $err]);
                                 exit();
                             }
-                        } else {
+                        } else if ($VAL_CREDITO[0] == 0) {
+                            $this->ELiminar_Cedulas_No_existen_2($param);
                             echo json_encode([0, "No se pudo realizar la verificacion", "Intentelo de nuevo", $VAL_CREDITO]);
                             exit();
                         }
@@ -979,14 +980,33 @@ class principalmodel extends Model
 
             $this->Update_Secuencial_Api_Banco($SEC);
             // Verificar si hay un error en la respuesta
-            if (isset($response_array['esError']) && $response_array['esError']) {
-                return [0, $response_array, $data];
+            if (isset($response_array['esError'])) {
+                if ($response_array['esError'] == true) {
+                    return [0, $response_array, $data];
+                } else {
+                    return [1, $response_array, $data];
+                }
             } else {
-                return [1, $response_array, $data];
+                $param = array(
+                    "ERROR_TYPE" => "API_SOL",
+                    "ERROR_CODE" => $response_array['codigo'],
+                    "ERROR_TEXT" => $response_array['esError']."-"
+                            .$response_array['descripcion']."-"
+                            .$response_array['idSesion']."-"
+                            .$response_array['secuencial'],
+                );
+                $this->INCIDENCIAS($param);
+                return [0, $response_array, $data];
             }
         } catch (Exception $e) {
             // Captura la excepción y maneja el error
             // echo "Error: " . $e->getMessage();
+            $param = array(
+                "ERROR_TYPE" => "API_SOL_FUNCTION",
+                "ERROR_CODE" => "",
+                "ERROR_TEXT" => $e->getMessage(),
+            );
+            $this->INCIDENCIAS($param);
             return [0, "Error al procesar la solictud banco", $e->getMessage()];
         }
     }
@@ -1037,6 +1057,28 @@ class principalmodel extends Model
             $query = $this->db->connect_dobra()->prepare('UPDATE creditos_solicitados
             set estado = 0
             where cedula = :cedula
+            ');
+            $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
+            if ($query->execute()) {
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return 1;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
+        }
+    }
+
+    function ELiminar_Cedulas_No_existen_2($param)
+    {
+
+        try {
+            $cedula = trim($param["cedula"]);
+            $query = $this->db->connect_dobra()->prepare('DELETE FROM creditos_solicitados
+            where cedula = :cedula AND numero is null
             ');
             $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
             if ($query->execute()) {
@@ -1336,6 +1378,44 @@ class principalmodel extends Model
                 // return 1;
             } else {
                 // return 0;
+            }
+        } catch (PDOException $e) {
+            $e = $e->getMessage();
+            echo json_encode($e);
+            exit();
+        }
+    }
+
+
+    function INCIDENCIAS($param)
+    {
+        try {
+            $ERROR_TYPE = trim($param["ERROR_TYPE"]);
+            $ERROR_CODE = trim($param["ERROR_CODE"]);
+            $ERROR_TEXT = trim($param["ERROR_TEXT"]);
+
+            $query = $this->db->connect_dobra()->prepare('INSERT INTO incidencias 
+            (
+                ERROR_TYPE, 
+                ERROR_CODE, 
+                ERROR_TEXT
+            ) 
+            VALUES
+            (
+                :ERROR_TYPE, 
+                :ERROR_CODE, 
+                :ERROR_TEXT
+            ),
+            ');
+            $query->bindParam(":ERROR_TYPE", $ERROR_TYPE, PDO::PARAM_STR);
+            $query->bindParam(":ERROR_CODE", $ERROR_CODE, PDO::PARAM_STR);
+            $query->bindParam(":ERROR_TEXT", $ERROR_TEXT, PDO::PARAM_STR);
+
+            if ($query->execute()) {
+                // $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                return 1;
+            } else {
+                return 0;
             }
         } catch (PDOException $e) {
             $e = $e->getMessage();
