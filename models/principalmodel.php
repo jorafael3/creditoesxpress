@@ -1129,7 +1129,7 @@ class principalmodel extends Model
                     <h3></h3>
                 </div>';
                 }
-                // $this->Generar_Documento($RUTA_ARCHIVO, $nombre, $cedula);
+                $this->Generar_Documento($RUTA_ARCHIVO, $nombre, $cedula);
                 if ($val == 1) {
                     echo json_encode([1, $DATOS_CEDULA, $DATOS_CREDITO, $html]);
                     exit();
@@ -1254,12 +1254,12 @@ class principalmodel extends Model
         // Información del cliente
         $pdf->SetFont('Arial', 'I', 11);
         $nombreCliente = $nombre; // Aquí debes poner el nombre del cliente
-        $fechaConsulta = date("Y-m-d h:m"); // Fecha de la consulta
+        $fechaConsulta = date("Y-m-d h:i A"); // Fecha de la consulta
         $direccionIP = $this->getRealIP(); // Dirección IP del cliente
 
 
-        $fecha = DateTime::createFromFormat('YmdHis', $fechaConsulta);
-        $fechaFormateada = $fecha->format('Y-m-d H:i A');
+        // $fecha = DateTime::createFromFormat('YmdHis', $fechaConsulta);
+        // $fechaFormateada = $fecha->format('Y-m-d H:i A');
         // Información del cliente
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->Cell(0, 5, '      CLIENTE: ', 0, 1, 'L');
@@ -1268,7 +1268,7 @@ class principalmodel extends Model
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->Cell(0, 5, "      " . utf8_decode('ACEPTÓ TERMINOS Y CONDICIONES: '), 0, 1, 'L');
         $pdf->SetFont('Arial', '', 10);
-        $pdf->Cell(0, 6, "      " . $fechaFormateada, 0, 1, 'L');
+        $pdf->Cell(0, 6, "      " . $fechaConsulta, 0, 1, 'L');
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->Cell(0, 5, utf8_decode('      DIRECCIÓN IP: '), 0, 1, 'L');
         $pdf->SetFont('Arial', '', 10);
