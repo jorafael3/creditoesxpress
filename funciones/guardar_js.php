@@ -80,6 +80,7 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
         
 
         AjaxSendReceiveData(url_Validar_Celular, param, function(x) {
+            console.log('x: ', x);
             
             if (x[0] == 1) {
                 TELEFONO = x[1];
@@ -146,15 +147,13 @@ $url_Validar_Cedula = constant('URL') . 'principal/Validar_Cedula/';
             }
             AjaxSendReceiveData(url_Validar_Cedula, param, function(x) {
                 console.log('x: ', x);
-                
-                
-                // if (x[0] == 1) {
-                //     $("#SECC_CRE").empty();
-                //     $("#SECC_B").empty();
-                //     $("#SECC_APR").append(x[3]);
-                // } else {
-                //     Mensaje(x[1], x[2], "error")
-                // }
+                if (x[0] == 1) {
+                    $("#SECC_CRE").empty();
+                    $("#SECC_B").empty();
+                    $("#SECC_APR").append(x[3]);
+                } else {
+                    Mensaje(x[1], x[2], "error")
+                }
             })
         }
     }
