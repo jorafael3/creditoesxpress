@@ -209,9 +209,7 @@ class principalmodel extends Model
     {
         try {
             date_default_timezone_set('America/Guayaquil');
-
             $celular = trim($param["celular"]);
-
             $query = $this->db->connect_dobra()->prepare('SELECT * FROM creditos_solicitados
             WHERE numero = :numero
             order by fecha_creado desc
@@ -219,17 +217,14 @@ class principalmodel extends Model
             $query->bindParam(":numero", $celular, PDO::PARAM_STR);
             if ($query->execute()) {
                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
-
                 if (count($result) == 0) {
                     return 1;
                 } else {
-
                     $currentDateTime = new DateTime();
                     $FECHA = $result[0]["fecha_creado"];
                     $formattedDateTime = new DateTime($FECHA);
                     $difference = $currentDateTime->diff($formattedDateTime);
                     $daysDifference = $difference->days;
-
 
                     $CREDITO = $result[0]["credito_aprobado"];
                     $CEDULA = $result[0]["cedula"];
@@ -240,7 +235,6 @@ class principalmodel extends Model
                     $localidad = $result[0]["localidad"];
                     $CREDITO_APROBADO = $result[0]["credito_aprobado"];
                     $fecha_nacimiento = $result[0]["fecha_nacimiento"];
-
 
                     $query_cant_con = $this->db->connect_dobra()->prepare("INSERT INTO cantidad_consultas
                     (
@@ -261,7 +255,6 @@ class principalmodel extends Model
                             "INDIVIDUAL_DACTILAR" => $codigo_dactilar,
                             "CANT_DOM" => $localidad,
                             "NOMBRES" => $nombre_cliente,
-
                         );
 
                         $param = array(
@@ -269,8 +262,6 @@ class principalmodel extends Model
                             "email" => $CORREO,
                             "cedula" => $CEDULA,
                         );
-
-
                         $VAL_CREDITO = $this->Obtener_Datos_Credito($VAL_CEDULA, $param, 0);
                         // echo json_encode([$VAL_CREDITO, $VAL_CEDULA]);
                         // exit();
@@ -460,6 +451,14 @@ class principalmodel extends Model
                             $this->ELiminar_Cedulas_No_existen_2($param);
                             echo json_encode([0, "No se pudo realizar la verificacion", "Intentelo de nuevo", $VAL_CREDITO]);
                             exit();
+                        } else if ($VAL_CREDITO[0] == 2) {
+                            $this->ELiminar_Cedulas_No_existen_2($param);
+                            echo json_encode([0, "No se pudo realizar la verificacion", "Este número de cédula ha excedido la cantidad de consultas diarias, intentelo luego", $VAL_CREDITO]);
+                            exit();
+                        } else if ($VAL_CREDITO[0] == 3) {
+                            $this->ELiminar_Cedulas_No_existen_2($param);
+                            echo json_encode([0, "No se pudo realizar la verificacion", "Por el momento nose puede realizar la operacion", $VAL_CREDITO]);
+                            exit();
                         }
                     } else if ($VAL_CEDULA[0] == 0) {
                         $this->ELiminar_Cedulas_No_existen($param);
@@ -467,47 +466,57 @@ class principalmodel extends Model
                         exit();
                     } else {
 
-                        $cedula = trim($param["cedula"]);
-                        $email = trim($param["email"]);
-                        $celular = base64_decode(trim($param["celular"]));
-                        $ip = $this->getRealIP();
-                        $dispositivo = $_SERVER['HTTP_USER_AGENT'];
+                        $_inci = array(
+                            "ERROR_TYPE" => "ENCRIP",
+                            "ERROR_CODE" => "",
+                            "ERROR_TEXT" => "ERROR AL OBTERN CEDULA ENCRIPTADA",
+                        );
+                        $INC = $this->INCIDENCIAS($_inci);
+                        $this->ELiminar_Cedulas_No_existen_2($param);
+                        echo json_encode([0, "No se pudo realizar la verificacion", "intentelo en un momento", "error", $VAL_CEDULA]);
+                        exit();
 
-                        $query = $this->db->connect_dobra()->prepare('UPDATE creditos_solicitados
-                        SET
-                            numero = :numero, 
-                            correo = :correo,
-                            ip = :ip,
-                            dispositivo = :dispositivo,
-                            estado = 2
-                        WHERE cedula = :cedula
-                        ');
-                        $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
-                        $query->bindParam(":numero", $celular, PDO::PARAM_STR);
-                        $query->bindParam(":correo", $email, PDO::PARAM_STR);
-                        $query->bindParam(":ip", $ip, PDO::PARAM_STR);
-                        $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
-                        if ($query->execute()) {
+                        // $cedula = trim($param["cedula"]);
+                        // $email = trim($param["email"]);
+                        // $celular = base64_decode(trim($param["celular"]));
+                        // $ip = $this->getRealIP();
+                        // $dispositivo = $_SERVER['HTTP_USER_AGENT'];
 
-                            $query_cant_con = $this->db->connect_dobra()->prepare("INSERT INTO cantidad_consultas
-                            (
-                                numero,
-                                cantidad
-                            )VALUES
-                            (
-                                :numero,
-                                1
-                            )");
-                            $query_cant_con->bindParam(":numero", $celular, PDO::PARAM_STR);
-                            $query_cant_con->execute();
-                            $html = '
-                                <div class="text-center mt-3">
-                                    <img style="width: 100%;" src="' . $link . '" alt="">
-                                </div>';
-                            // $this->Generar_Documento($RUTA_ARCHIVO);
-                            echo json_encode([1, [], [], $html]);
-                            exit();
-                        }
+                        // $query = $this->db->connect_dobra()->prepare('UPDATE creditos_solicitados
+                        // SET
+                        //     numero = :numero, 
+                        //     correo = :correo,
+                        //     ip = :ip,
+                        //     dispositivo = :dispositivo,
+                        //     estado = 2
+                        // WHERE cedula = :cedula
+                        // ');
+                        // $query->bindParam(":cedula", $cedula, PDO::PARAM_STR);
+                        // $query->bindParam(":numero", $celular, PDO::PARAM_STR);
+                        // $query->bindParam(":correo", $email, PDO::PARAM_STR);
+                        // $query->bindParam(":ip", $ip, PDO::PARAM_STR);
+                        // $query->bindParam(":dispositivo", $dispositivo, PDO::PARAM_STR);
+                        // if ($query->execute()) {
+
+                        //     $query_cant_con = $this->db->connect_dobra()->prepare("INSERT INTO cantidad_consultas
+                        //     (
+                        //         numero,
+                        //         cantidad
+                        //     )VALUES
+                        //     (
+                        //         :numero,
+                        //         1
+                        //     )");
+                        //     $query_cant_con->bindParam(":numero", $celular, PDO::PARAM_STR);
+                        //     $query_cant_con->execute();
+                        //     $html = '
+                        //         <div class="text-center mt-3">
+                        //             <img style="width: 100%;" src="' . $link . '" alt="">
+                        //         </div>';
+                        //     // $this->Generar_Documento($RUTA_ARCHIVO);
+                        //     echo json_encode([1, [], [], $html]);
+                        //     exit();
+                        // }
                     }
                 }
             } else {
@@ -645,10 +654,21 @@ class principalmodel extends Model
     function Obtener_Datos_Cedula($param)
     {
         try {
+            set_time_limit(30);
+            $start_time = microtime(true);
+
             // sleep(4);
             $cedula = trim($param["cedula"]);
             $arr = "";
             while (true) {
+                $current_time = microtime(true);
+                $elapsed_time = $current_time - $start_time;
+                // Verificar si el tiempo transcurrido excede el límite de tiempo máximo permitido (por ejemplo, 120 segundos)
+                if (round($elapsed_time, 0) >= 30) {
+                    return [2, "La consulta excedió el tiempo máximo permitido"];
+                }
+                // echo json_encode("Tiempo transcurrido: " . $elapsed_time . " segundos\n");
+
                 $query = $this->db->connect_dobra()->prepare("SELECT 
                 cedula,
                 cedula_encr
@@ -663,20 +683,16 @@ class principalmodel extends Model
                         if ($encry != null) {
                             $en = $this->consulta_api_cedula($encry);
                             return $en;
-                            // echo json_encode($en[1]);
-                            // exit();
-                            // if ($en[0] == 1) {
-                            //     $arr = $en[1];
-                            //     break;
-                            // }
                         } else {
                             continue;
                         }
                     }
+                } else {
+                    return [0, "INTENTE DE NUEVO"];
                 }
                 return [0, "INTENTE DE NUEVO"];
             }
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
 
             $e = $e->getMessage();
             return [0, "INTENTE DE NUEVO"];
@@ -686,20 +702,17 @@ class principalmodel extends Model
     function encryptCedula($cedula)
     {
         // Contenido de la clave pública
-        $public_key_file = "C:/xampp/htdocs/creditoexpress/models/PBKey.txt";
-
+        $public_key_file = dirname(__DIR__) . "/models/PBKey.txt";
         // Lee el contenido del archivo PEM
         $public_key_content = file_get_contents($public_key_file);
-
         // Elimina espacios en blanco adicionales alrededor del contenido
         $public_key_content = trim($public_key_content);
 
         $rsaKey = openssl_pkey_get_public($public_key_content);
         if (!$rsaKey) {
             // Manejar el error de obtener la clave pública
-            return openssl_error_string();
+            return [0, openssl_error_string(), $public_key_file];
         }
-
         // // Divide el texto en bloques para encriptar
         $encryptedData = '';
         $encryptionSuccess = openssl_public_encrypt($cedula, $encryptedData, $rsaKey);
@@ -716,11 +729,11 @@ class principalmodel extends Model
 
         if ($encryptionSuccess === false) {
             // Manejar el error de encriptación
-            return null;
+            return [0, null, $public_key_file];
         }
 
         // Devolver la cédula encriptada
-        return base64_encode($encryptedData);
+        return [1, base64_encode($encryptedData)];
         // echo json_encode(base64_encode($encryptedData));
         // exit();
         // return ($encrypted);
@@ -746,9 +759,15 @@ class principalmodel extends Model
 
             // $cedula = "0930254909";
             $cedula_ECrip = $this->encryptCedula($cedula);
+            if ($cedula_ECrip[0] == 0) {
+                return [0, $cedula_ECrip, [], []];
+            } else {
+                $cedula_ECrip = $cedula_ECrip[1];
+            }
+
             $fecha = DateTime::createFromFormat('d/m/Y', $nacimiento);
             $fecha_formateada = $fecha->format('Ymd');
-            $ingresos = "1500";
+            $ingresos = "500";
             $Instruccion = "SECU";
 
             $SEC = $this->Get_Secuencial_Api_Banco();
@@ -779,6 +798,8 @@ class principalmodel extends Model
             $api_key = '0G4uZTt8yVlhd33qfCn5sazR5rDgolqH64kUYiVM5rcuQbOFhQEADhMRHqumswphGtHt1yhptsg0zyxWibbYmjJOOTstDwBfPjkeuh6RITv32fnY8UxhU9j5tiXFrgVz';
             // Inicializa la sesión cURL
             $ch = curl_init($url);
+
+            curl_setopt( $ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
             // Configura las opciones de la solicitud
             $verbose = fopen('php://temp', 'w+');
             curl_setopt($ch, CURLOPT_VERBOSE, true);
@@ -791,6 +812,8 @@ class principalmodel extends Model
                 'Content-Length: ' . strlen($data_string),
                 'ApiKeySuscripcion: ' . $api_key
             ));
+            curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:7.0.1) Gecko/20100101 Firefox/7.0.1');
+
             // Ejecuta la solicitud y obtiene la respuesta
             $response = (curl_exec($ch));
             // Cierra la sesión cURL
@@ -807,7 +830,11 @@ class principalmodel extends Model
 
             // echo json_encode($response_array);
             // exit();
-
+            // if (extension_loaded('curl')) {
+            //     echo "cURL está habilitado en este servidor.";
+            // } else {
+            //     echo "cURL no está habilitado en este servidor.";
+            // }
 
             // Verificar si hay un error en la respuesta
             if (isset($response_array['esError'])) {
@@ -820,10 +847,17 @@ class principalmodel extends Model
                         . $response_array['idSesion'] . "-"
                         . $response_array['secuencial'],
                 );
+                date_default_timezone_set('America/Guayaquil');
+                $hora_actual = date('G');
 
                 if ($response_array['esError'] == true) {
-                    $INC = $this->INCIDENCIAS($_inci);
-                    return [0, $response_array, $data, $INC];
+                    if ($response_array['descripcion'] == "No tiene oferta") {
+                        $INC = $this->INCIDENCIAS($_inci);
+                        return [2, $response_array, $data, $INC];
+                    } else if ($response_array['descripcion'] == "Ha ocurrido un error" && $hora_actual >= 21) {
+                        $INC = $this->INCIDENCIAS($_inci);
+                        return [3, $response_array, $data, $INC, $hora_actual];
+                    }
                 } else {
                     $INC = $this->INCIDENCIAS($_inci);
                     return [1, $response_array, $data];
@@ -831,7 +865,7 @@ class principalmodel extends Model
             } else {
                 // $INC = $this->INCIDENCIAS($_inci);
 
-                return [0, $response_array, $data];
+                return [0, $response_array, $data,$error,$verboseLog,extension_loaded('curl')];
             }
         } catch (Exception $e) {
             // Captura la excepción y maneja el error
@@ -845,6 +879,119 @@ class principalmodel extends Model
             return [0, "Error al procesar la solictud banco", $e->getMessage()];
         }
     }
+
+    function Obtener_Datos_Credito_($param, $param_DATOS, $val)
+    {
+        try {
+            if ($val == 1) {
+                $cedula = $param->CEDULA;
+                $nacimiento = $param->FECHA_NACIM;
+                $CELULAR = base64_decode($param_DATOS["celular"]);
+            } else {
+                $cedula = $param["CEDULA"];
+                $nacimiento = $param["FECHA_NACIM"];
+                $CELULAR = ($param_DATOS["celular"]);
+            }
+
+            $cedula_ECrip = $this->encryptCedula($cedula);
+            if ($cedula_ECrip[0] == 0) {
+                return [0, $cedula_ECrip, [], []];
+            } else {
+                $cedula_ECrip = $cedula_ECrip[1];
+            }
+
+            $fecha = DateTime::createFromFormat('d/m/Y', $nacimiento);
+            $fecha_formateada = $fecha->format('Ymd');
+            $ingresos = "1500";
+            $Instruccion = "SECU";
+
+            $SEC = $this->Get_Secuencial_Api_Banco();
+            $SEC = intval($SEC[0]["valor"]) + 1;
+
+            $data = array(
+                "transaccion" => 4001,
+                "idSession" => "1",
+                "secuencial" => $SEC,
+                "mensaje" => array(
+                    "IdCasaComercialProducto" => 8,
+                    "TipoIdentificacion" => "CED",
+                    "IdentificacionCliente" => $cedula_ECrip, // Encriptar la cédula
+                    "FechaNacimiento" => $fecha_formateada,
+                    "ValorIngreso" => $ingresos,
+                    "Instruccion" =>  $Instruccion,
+                    "Celular" =>  $CELULAR
+                )
+            );
+            $url = 'https://bs-autentica.com/cco/apiofertaccoqa1/api/CasasComerciales/GenerarCalificacionEnPuntaCasasComerciales';
+
+            $api_key = '0G4uZTt8yVlhd33qfCn5sazR5rDgolqH64kUYiVM5rcuQbOFhQEADhMRHqumswphGtHt1yhptsg0zyxWibbYmjJOOTstDwBfPjkeuh6RITv32fnY8UxhU9j5tiXFrgVz';
+
+            // Convertir datos a JSON
+            $data_string = json_encode($data);
+
+            // Configurar el contexto del flujo (stream context)
+            $context = stream_context_create([
+                'http' => [
+                    'method' => 'PUT',
+                    'header' => 'Content-Type: application/json' . "\r\n" .
+                        'Content-Length: ' . strlen($data_string) . "\r\n" .
+                        'ApiKeySuscripcion: ' . $api_key . "\r\n",
+                    'content' => $data_string
+                ],
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false
+                ]
+            ]);
+
+            // Realizar la solicitud HTTP utilizando file_get_contents
+            $response = file_get_contents($url, false, $context);
+            $error = error_get_last();
+            $error_message = $error['message'];
+            // Manejar la respuesta
+            $response_array = json_decode($response, true);
+            $verboseLog = ""; // En este caso, no hay información de verbose
+
+            $this->Update_Secuencial_Api_Banco($SEC);
+
+            if (isset($response_array['esError'])) {
+                $_inci = array(
+                    "ERROR_TYPE" => "API_SOL",
+                    "ERROR_CODE" => $response_array['codigo'],
+                    "ERROR_TEXT" => $response_array['esError'] . "-" .
+                        $response_array['descripcion'] . "-" .
+                        $response_array['idSesion'] . "-" .
+                        $response_array['secuencial'],
+                );
+                date_default_timezone_set('America/Guayaquil');
+                $hora_actual = date('G');
+
+                if ($response_array['esError'] == true) {
+                    if ($response_array['descripcion'] == "No tiene oferta") {
+                        $INC = $this->INCIDENCIAS($_inci);
+                        return [2, $response_array, $data, $INC];
+                    } elseif ($response_array['descripcion'] == "Ha ocurrido un error" && $hora_actual >= 21) {
+                        $INC = $this->INCIDENCIAS($_inci);
+                        return [3, $response_array, $data, $INC, $hora_actual];
+                    }
+                } else {
+                    $INC = $this->INCIDENCIAS($_inci);
+                    return [1, $response_array, $data];
+                }
+            } else {
+                return [0, $response_array, $data, $error_message, $verboseLog];
+            }
+        } catch (Exception $e) {
+            $param = array(
+                "ERROR_TYPE" => "API_SOL_FUNCTION",
+                "ERROR_CODE" => "",
+                "ERROR_TEXT" => $e->getMessage(),
+            );
+            $this->INCIDENCIAS($param);
+            return [0, "Error al procesar la solictud banco", $e->getMessage()];
+        }
+    }
+
 
     function Get_Secuencial_Api_Banco()
     {
@@ -1111,8 +1258,8 @@ class principalmodel extends Model
 
 
                 if ($credito_aprobado == 1) {
-                   
-                $html = '
+
+                    $html = '
                 <div class="text-center mt-3">
                     <h1 style="font-size:60px" class="text-primary">Felicidades! </h1>
                     <h2>Tienes credito disponible</h2>
@@ -1299,61 +1446,62 @@ class principalmodel extends Model
         // Título
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->Cell(0, 10, utf8_decode('AUTORIZACIÓN PARA EL TRATAMIENTO DE DATOS PERSONALES'), 0, 1, 'C');
-        $pdf->Cell(0, 2, utf8_decode('SALVACERO CIA. LTDA.'), 0, 1, 'C');
+        $pdf->Cell(0, 2, utf8_decode('BANCO SOLIDARIO S.A.'), 0, 1, 'C');
         $pdf->Ln(3);
 
         // Contenido
         $pdf->SetFont('Arial', '', 9);
         $contenido = utf8_decode("
         Declaración de Capacidad legal y sobre la Aceptación:\n
-        Por medio de la presente autorizo de manera libre, voluntaria, previa, informada e inequívoca a SALVACERO CIA. LTDA.
-        para que en los términos legalmente establecidos realice el tratamiento de mis datos personales como parte de la relación
-        precontractual, contractual y post contractual para:\n
-        El procesamiento, análisis, investigación, estadísticas, referencias y demás trámites para facilitar, promover, permitir o
-        mantener las relaciones con SALVACERO CIA. LTDA.\n
+        Por medio de la presente autorizo de manera libre, voluntaria, previa, informada e inequívoca a BANCO SOLIDARIO
+        S.A. para que en los términos legalmente establecidos realice el tratamiento de mis datos personales como parte de
+        la relación precontractual, contractual y post contractual para: \n
+        El procesamiento, análisis, investigación, estadísticas, referencias y demás trámites para facilitar, promover, permitir
+        o mantener las relaciones con el BANCO. \n
         Cuantas veces sean necesarias, gestione, obtenga y valide de cualquier entidad pública y/o privada que se encuentre
         facultada en el país, de forma expresa a la Dirección General de Registro Civil, Identificación y Cedulación, a la Dirección
         Nacional de Registros Públicos, al Servicio de Referencias Crediticias, a los burós de información crediticia, instituciones
-        financieras de crédito, de cobranza, compañías emisoras o administradoras de tarjetas de crédito, personas naturales y los
-        establecimientos de comercio, personas señaladas como referencias, empleador o cualquier otra entidad y demás fuentes
-        legales de información autorizadas para operar en el país, información y/o documentación relacionada con mi perfil, capacidad
-        de pago y/o cumplimiento de obligaciones, para validar los datos que he proporcionado, y luego de mi aceptación sean
-        registrados para el desarrollo legítimo de la relación jurídica o comercial, así como para realizar actividades de tratamiento
-        sobre mi comportamiento crediticio, manejo y movimiento de cuentas bancarias, tarjetas de crédito, activos, pasivos,
-        datos/referencias personales y/o patrimoniales del pasado, del presente y las que se generen en el futuro, sea como deudor
-        principal, codeudor o garante, y en general, sobre el cumplimiento de mis obligaciones. Faculto expresamente a SALVACERO
-        CIA. LTDA. para transferir o entregar a las mismas personas o entidades, la información relacionada con mi comportamiento
-        crediticio.\n
+        financieras de crédito, de cobranza, compañías emisoras o administradoras de tarjetas de crédito, personas naturales
+        y los establecimientos de comercio, personas señaladas como referencias, empleador o cualquier otra entidad y demás
+        fuentes legales de información autorizadas para operar en el país, información y/o documentación relacionada con mi
+        perfil, capacidad de pago y/o cumplimiento de obligaciones, para validar los datos que he proporcionado, y luego de
+        mi aceptación sean registrados para el desarrollo legítimo de la relación jurídica o comercial, así como para realizar
+        actividades de tratamiento sobre mi comportamiento crediticio, manejo y movimiento de cuentas bancarias, tarjetas
+        de crédito, activos, pasivos, datos/referencias personales y/o patrimoniales del pasado, del presente y las que se
+        generen en el futuro, sea como deudor principal, codeudor o garante, y en general, sobre el cumplimiento de mis
+        obligaciones. Faculto expresamente al Banco para transferir o entregar a las mismas personas o entidades, la
+        información relacionada con mi comportamiento crediticio. Esta expresa autorización la otorgo al Banco o a cualquier
+        cesionario o endosatario. \n
         Tratar, transferir y/o entregar la información que se obtenga en virtud de esta solicitud incluida la relacionada con mi
-        comportamiento crediticio y la que se genere durante la relación jurídica y/o comercial a autoridades competentes, terceros,
-        socios comerciales y/o adquirientes de cartera, para el tratamiento de mis datos personales conforme los fines detallados en
-        esta autorización o que me contacten por cualquier medio para ofrecerme los distintos servicios y productos que integran su
-        portafolio y su gestión, relacionados o no con los servicios financieros. En caso de que el SALVACERO CIA. LTDA. ceda o
-        transfiera cartera adeudada por mí, el cesionario o adquiriente de dicha cartera queda desde ahora expresamente facultado
-        para realizar las mismas actividades establecidas en esta autorización.\n
-        Fines informativos, marketing, publicitarios y comerciales a través del servicio de telefonía, correo electrónico, mensajería
-        SMS, WhatsApp, redes sociales y/o cualquier otro medio de comunicación electrónica.\n
-        Entiendo y acepto que mi información personal podrá ser almacenada de manera digital, y accederán a ella los funcionarios
-        de SALVACERO CIA. LTDA., estando obligados a cumplir con la legislación aplicable a las políticas de confidencialidad,
-        protección de datos y sigilo bancario. En caso de que exista una negativa u oposición para el tratamiento de estos datos, no
-        podré disfrutar de los servicios o funcionalidades que SALVACERO CIA. LTDA. ofrece y no podrá suministrarme productos,
-        ni proveerme sus servicios o contactarme y en general cumplir con varias de las finalidades descritas en la Política.\n
-        SALVACERO CIA. LTDA. conservará la información personal al menos durante el tiempo que dure la relación comercial y el
-        que sea necesario para cumplir con la normativa respectiva del sector relativa a la conservación de archivos.\n
-        Declaro conocer que para el desarrollo de los propósitos previstos en el presente documento y para fines precontractuales,
-        contractuales y post contractuales es indispensable el tratamiento de mis datos personales conforme a la Política disponible
-        en la página web de SALVACERO CIA. LTDA.\n
-        Asimismo, declaro haber sido informado por el SALVACERO CIA. LTDA. de los derechos con que cuento para conocer,
-        actualizar y rectificar mi información personal; así como, si no deseo continuar recibiendo información comercial y/o
-        publicidad, deberé remitir mi requerimiento a través del proceso de atención de derechos ARSO+ en cualquier momento y
-        sin costo alguno, utilizando la página web https://www.salvacero.com/terminos o comunicado escrito a Srs. Salvacero y
-        enviando un correo electrónico a la dirección marketing@salvacero.com\n
-        En virtud de que, para ciertos productos y servicios SALVACERO CIA. LTDA. requiere o solicita el tratamiento de datos
-        personales de un tercero que como cliente podré facilitar, como por ejemplo referencias comerciales o de contacto, garantizo
+        comportamiento crediticio y la que se genere durante la relación jurídica o comercial a autoridades competentes,
+        terceros, socios comerciales y/o adquirientes de cartera, para el tratamiento de mis datos personales conforme los
+        fines detallados en esta autorización o que me contacten por cualquier medio para ofrecerme los distintos servicios y
+        productos que integran su portafolio y su gestión, relacionados o no con los servicios financieros del BANCO. En caso
+        de que el BANCO ceda o transfiera cartera adeudada por mí, el cesionario o adquiriente de dicha cartera queda desde
+        ahora expresamente facultado para realizar las mismas actividades establecidas en esta autorización.\n
+        Entiendo y acepto que mi información personal podrá ser almacenada de manera impresa o digital, y accederán a ella
+        los funcionarios de BANCO SOLIDARIO, estando obligados a cumplir con la legislación aplicable a las políticas de
+        confidencialidad, protección de datos y sigilo bancario. En caso de que exista una negativa u oposición para el
+        tratamiento de estos datos, no podré disfrutar de los servicios o funcionalidades que el BANCO ofrece y no podrá
+        suministrarme productos, ni proveerme sus servicios o contactarme y en general cumplir con varias de las finalidades
+        descritas en la Política. \n
+        El BANCO conservará la información personal al menos durante el tiempo que dure la relación comercial y el que sea
+        necesario para cumplir con la normativa respectiva del sector relativa a la conservación de archivos. \n
+        Declaro conocer que para el desarrollo de los propósitos previstos en el presente documento y para fines
+        precontractuales, contractuales y post contractuales es indispensable el tratamiento de mis datos personales
+        conforme a la Política disponible en la página web del BANCO www.banco-solidario.com/transparencia Asimismo,
+        declaro haber sido informado por el BANCO de los derechos con que cuento para conocer, actualizar y rectificar mi
+        información personal; así como, si no deseo continuar recibiendo información comercial y/o publicidad, deberé remitir
+        mi requerimiento a través del proceso de atención de derechos ARSO+ en cualquier momento y sin costo alguno,
+        utilizando la página web (www.banco-solidario.com), teléfono: 1700 765 432, comunicado escrito o en cualquiera de
+        las agencias del BANCO. \n
+        En virtud de que, para ciertos productos y servicios el BANCO requiere o solicita el tratamiento de datos personales
+        de un tercero que como cliente podré facilitar, como por ejemplo referencias comerciales o de contacto, garantizo
         que, si proporciono datos personales de terceras personas, les he solicitado su aceptación e informado acerca de las
-        finalidades y la forma en la que SALVACERO CIA. LTDA. necesita tratar sus datos personales.\n
+        finalidades y la forma en la que el BANCO necesita tratar sus datos personales. \n
         Para la comunicación de sus datos personales se tomarán las medidas de seguridad adecuadas conforme la normativa
-        vigente. 
+        vigente.\n
+       
         ");
         $pdf->MultiCell(0, 4, $contenido);
         $pdf->Ln(3);
@@ -1362,30 +1510,31 @@ class principalmodel extends Model
 
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->Cell(0, 10, utf8_decode('AUTORIZACIÓN EXPLÍCITA DE TRATAMIENTO DE DATOS PERSONALES'), 0, 1, 'C');
-        $pdf->Cell(0, 2, utf8_decode('SALVACERO CIA. LTDA.'), 0, 1, 'C');
+        $pdf->Cell(0, 2, utf8_decode('BANCO SOLIDARIO S.A.'), 0, 1, 'C');
         $pdf->Ln(3);
 
         $pdf->SetFont('Arial', '', 9);
         $contenido = utf8_decode("
-        Declaro que soy el titular de la información reportada, y que la he suministrado de forma voluntaria, completa, confiable,
-        veraz, exacta y verídica:\n
-        Como titular de los datos personales, particularmente el código dactilar, no me encuentro obligado a otorgar mi autorización
-        de tratamiento a menos que requiera consultar y/o aplicar a un producto y/o servicio financiero. A través de la siguiente
-        autorización libre, especifica, previa, informada, inequívoca y explícita, faculto al tratamiento (recopilación, acceso, consulta,
-        registro, almacenamiento, procesamiento, análisis, elaboración de perfiles, comunicación o transferencia y eliminación) de
-        mis datos personales incluido el código dactilar con la finalidad de: consultar y/o aplicar a un producto y/o servicio financiero
-        y ser sujeto de decisiones basadas única o parcialmente en valoraciones que sean producto de procesos automatizados,
-        incluida la elaboración de perfiles. Esta información será conservada por el plazo estipulado en la normativa aplicable.\n
-        Así mismo, declaro haber sido informado por SALVACERO CIA. LTDA. de los derechos con que cuento para conocer,
-        actualizar y rectificar mi información personal, así como, los establecidos en el artículo 20 de la LOPDP y remitir mi
-        requerimiento a través del proceso de atención de derechos ARSO+; en cualquier momento y sin costo alguno, utilizando la
-        página web https://www.salvacero.com/terminos, comunicado escrito o en cualquiera de las agencias de SALVACERO CIA.
-        LTDA.\n
-        Para proteger esta información tenemos medidas técnicas y organizativas de seguridad adaptadas a los riesgos como, por
-        ejemplo: anonimización, cifrado, enmascarado y seudonimización.\n
-        Con la lectura de este documento manifiesto que he sido informado sobre el Tratamiento de mis Datos Personales, y otorgo
-        mi autorización y aceptación de forma voluntaria y verídica, tanto para la SALVACERO CIA. LTDA. y para cualquier cesionario
-        o endosatario, especialmente Banco Solidario S.A. En señal de aceptación suscribo el presente documento.
+        Declaro que soy el titular de la información reportada, y que la he suministrado de forma voluntaria, completa,
+        confiable, veraz, exacta y verídica:\n
+        Como titular de los datos personales, particularmente el código dactilar, dato biométrico facial, no me encuentro
+        obligado a otorgar mi autorización de tratamiento a menos que requiera consultar y/o aplicar a un producto y/o
+        servicio financiero. A través de la siguiente autorización libre, especifica, previa, informada, inequívoca y explícita,
+        faculto al tratamiento (recopilación, acceso, consulta, registro, almacenamiento, procesamiento, análisis, elaboración
+        de perfiles, comunicación o transferencia y eliminación) de mis datos personales incluido el código dactilar con la
+        finalidad de: consultar y/o aplicar a un producto y/o servicio financiero y ser sujeto de decisiones basadas única o
+        parcialmente en valoraciones que sean producto de procesos automatizados, incluida la elaboración de perfiles. Esta
+        información será conservada por el plazo estipulado en la normativa aplicable. \n
+        Así mismo, declaro haber sido informado por el BANCO de los derechos con que cuento para conocer, actualizar y
+        rectificar mi información personal, así como, los establecidos en el artículo 20 de la LOPDP y remitir mi requerimiento
+        a través del proceso de atención de derechos ARSO+; en cualquier momento y sin costo alguno, utilizando la página
+        web (www.banco-solidario.com), teléfono: 1700 765 432, comunicado escrito o en cualquiera de las agencias del
+        BANCO. \n
+        Para proteger esta información conozco que el Banco cuenta con medidas técnicas y organizativas de seguridad
+        adaptadas a los riesgos como, por ejemplo: anonimización, cifrado, enmascarado y seudonimización. \n
+        Con la lectura de este documento manifiesto que he sido informado sobre el Tratamiento de mis Datos Personales, y
+        otorgo mi autorización y aceptación de forma voluntaria y verídica. En señal de aceptación suscribo el presente
+        documento. 
         ");
 
         $pdf->MultiCell(0, 4, $contenido);
@@ -1719,7 +1868,6 @@ class principalmodel extends Model
 
 
         $msg = "<div style='font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;'>";
-        $msg .= "<img src='https://www.cartimex.com/assets/img/logo200.png' width='200' height='100' style='display:block; margin: 0 auto;'> <br><br>";
         $msg .= "<h1 style='text-align:center; color: #24448c;'>Actualización de datos</h1><br><br>";
         $msg .= "<p style='text-align: justify;'>Estimad@ " . $nombre . "</p>";
         $msg .= "<p style='text-align: justify;'>Sus datos han sido actualizados correctamente</p>";
